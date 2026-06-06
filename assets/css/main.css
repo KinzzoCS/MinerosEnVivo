@@ -257,12 +257,39 @@ button, input, textarea, select { font: inherit; }
 .article-hero-img { aspect-ratio: 16 / 9; border-radius: 8px; margin: 1rem 0; }
 .article-body { color: #d9dee8; line-height: 1.75; white-space: pre-line; }
 .site-footer {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
   padding: 2rem clamp(1rem, 4vw, 3rem);
   border-top: 1px solid var(--line);
   color: var(--muted);
+}
+.footer-content {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+}
+.footer-content p { margin: 0; font-size: .9rem; }
+.footer-credit {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.footer-credit span {
+  font-size: .8rem;
+  opacity: .75;
+  letter-spacing: .03em;
+}
+.footer-credit img {
+  height: 32px;
+  filter: invert(1);
+  opacity: .85;
+  transition: opacity .3s;
+}
+.footer-credit img:hover { opacity: 1; }
+@media (min-width: 768px) {
+  .footer-content { flex-direction: row; }
 }
 @media (max-width: 980px) {
   .hero-shell { grid-template-columns: 1fr; }
