@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Resultados | Mineros TV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar" data-admin-nav></aside>
+    <main class="admin-main">
+      <div class="admin-top"><h1>Resultados</h1><button class="admin-button" data-logout>Salir</button></div>
+      <form class="admin-card admin-form" id="resultForm">
+        <input type="hidden" id="resultDocId">
+        <label class="admin-field">Local<input id="home" value="Mineros" required></label>
+        <label class="admin-field">Visitante<input id="away" required></label>
+        <label class="admin-field">Carreras local<input id="homeScore" type="number" min="0" required></label>
+        <label class="admin-field">Carreras visitante<input id="awayScore" type="number" min="0" required></label>
+        <label class="admin-field">Fecha<input id="resultDate" type="date" required></label>
+        <button class="admin-button" type="submit">Guardar resultado</button>
+      </form>
+      <section class="admin-list" id="resultsList"></section>
+    </main>
+  </div>
+  <script type="module" src="../assets/js/admin/results-admin.js"></script>
+</body>
+</html>

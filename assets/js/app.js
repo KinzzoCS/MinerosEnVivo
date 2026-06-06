@@ -6,6 +6,10 @@ const state = { identity: getGuestIdentity(), lastMessageAt: 0, mutedUntil: 0, b
 let currentSettings = demoSettings;
 let chatUnsubscribe = null;
 let firebaseApp = null;
+let viewerDocId = "";
+let viewerIntervalId = null;
+let viewerUnsubscribe = null;
+const VIEWER_STALE_SECONDS = 35;
 
 init();
 
@@ -20,6 +24,7 @@ async function init() {
   listenPublicData(firebase);
   listenChat(firebase);
   listenModeration(firebase);
+  initViewerPresence(firebase);
 }
 
 function renderFallback() {
@@ -42,7 +47,7 @@ function listenPublicData({ db, firestore }) {
 }
 
 function renderSettings(settings) {
-  const streamSelect = qs("#streamSelect");
+  const streamButtons = document.querySelectorAll("[data-stream-option]");
   const streamId = state.streamId || settings.activeStream || "1";
   state.streamId = streamId;
   const currentStream = streamId === "2"
@@ -51,28 +56,88 @@ function renderSettings(settings) {
   const title = sanitizeText(currentStream.title || settings.liveTitle || "Mineros TV en vivo", 90);
   qs("#liveTitle").textContent = title;
   qs("#liveStatusLabel").textContent = currentStream.status ? "En vivo ahora" : "Transmision programada";
-  if (streamSelect && streamSelect.value !== streamId) streamSelect.value = streamId;
+  streamButtons.forEach(button => button.classList.toggle("active", button.dataset.streamOption === streamId));
   const frame = qs("#streamFrame");
   frame.src = youtubeEmbedUrl(currentStream.url || settings.liveStreamUrl || "");
   qs("#playerFrame").classList.remove("skeleton");
+  updateViewerPresence();
+}
+
+function initViewerPresence({ db, firestore }) {
+  window.addEventListener("beforeunload", () => {
+    if (!viewerDocId) return;
+    firestore.deleteDoc(firestore.doc(db, "viewers", viewerDocId));
+  });
+}
+
+function updateViewerPresence() {
+  if (!firebaseApp || !state.streamId) return;
+  const { db, firestore } = firebaseApp;
+  const nextDocId = `${state.identity.id}-${state.streamId}`;
+  const previousDocId = viewerDocId;
+  viewerDocId = nextDocId;
+
+  if (previousDocId && previousDocId !== nextDocId) {
+    firestore.deleteDoc(firestore.doc(db, "viewers", previousDocId));
+    if (viewerIntervalId) {
+      clearInterval(viewerIntervalId);
+      viewerIntervalId = null;
+    }
+  }
+
+  const viewerRef = firestore.doc(db, "viewers", viewerDocId);
+  firestore.setDoc(viewerRef, {
+    streamId: state.streamId,
+    displayName: state.identity.name,
+    lastSeen: firestore.serverTimestamp()
+  }, { merge: true });
+
+  if (!viewerIntervalId) {
+    viewerIntervalId = setInterval(() => {
+      firestore.setDoc(viewerRef, { lastSeen: firestore.serverTimestamp() }, { merge: true });
+    }, 15000);
+  }
+
+  subscribeViewerCount();
+}
+
+function subscribeViewerCount() {
+  if (!firebaseApp || !state.streamId) return;
+  const { db, firestore } = firebaseApp;
+  if (viewerUnsubscribe) viewerUnsubscribe();
+  const cutoff = firestore.Timestamp.fromDate(new Date(Date.now() - VIEWER_STALE_SECONDS * 1000));
+  const q = firestore.query(
+    firestore.collection(db, "viewers"),
+    firestore.where("streamId", "==", state.streamId),
+    firestore.where("lastSeen", ">=", cutoff)
+  );
+  viewerUnsubscribe = firestore.onSnapshot(q, snap => {
+    const count = snap.size;
+    const label = qs("#viewersCount");
+    if (label) label.textContent = String(count);
+  });
 }
 
 function renderMatches(matches) {
-  qs("#matchesGrid").innerHTML = matches.map(item => `
-    <article class="sports-card">
-      <span class="badge">${sanitizeText(item.tournament || "Temporada", 40)}</span>
-      <h3>Mineros vs ${sanitizeText(item.rival, 42)}</h3>
-      <p class="meta">${formatDate(item.date)} · ${sanitizeText(item.time || "Hora por definir", 20)}</p>
-      <p class="meta">${sanitizeText(item.stadium || "Estadio por definir", 60)}</p>
-    </article>`).join("");
+  qs("#matchesGrid").innerHTML = matches.map(item => {
+    const localTeam = item.minerIsAway ? sanitizeText(item.rival, 42) : "Mineros";
+    const visitorTeam = item.minerIsAway ? "Mineros" : sanitizeText(item.rival, 42);
+    return `
+      <article class="sports-card">
+        <span class="badge">${sanitizeText(item.tournament || "Temporada", 40)}</span>
+        <h3>${localTeam} vs ${visitorTeam}</h3>
+        <p class="meta">${formatDate(item.date)} · ${sanitizeText(item.time || "Hora por definir", 20)}</p>
+        <p class="meta">${sanitizeText(item.stadium || "Estadio por definir", 60)}</p>
+      </article>`;
+  }).join("");
 }
 
 function renderResults(results) {
   qs("#resultsList").innerHTML = results.map(item => `
     <article class="result-row">
-      <strong>${sanitizeText(item.home, 32)}</strong>
-      <span class="score">${Number(item.homeScore || 0)} - ${Number(item.awayScore || 0)}</span>
       <strong>${sanitizeText(item.away, 32)}</strong>
+      <span class="score">${Number(item.awayScore || 0)} - ${Number(item.homeScore || 0)}</span>
+      <strong>${sanitizeText(item.home, 32)}</strong>
     </article>`).join("");
 }
 
@@ -89,12 +154,14 @@ function renderNews(news) {
 }
 
 function bindChatUi() {
-  const streamSelect = qs("#streamSelect");
-  if (streamSelect) {
-    streamSelect.addEventListener("change", () => {
-      state.streamId = streamSelect.value;
-      renderSettings(currentSettings);
-      if (firebaseApp) subscribeChat(firebaseApp);
+  const streamButtons = document.querySelectorAll("[data-stream-option]");
+  if (streamButtons.length) {
+    streamButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        state.streamId = button.dataset.streamOption;
+        renderSettings(currentSettings);
+        if (firebaseApp) subscribeChat(firebaseApp);
+      });
     });
   }
 

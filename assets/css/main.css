@@ -87,22 +87,76 @@ button, input, textarea, select { font: inherit; }
 }
 .stream-selector {
   display: flex;
-  align-items: center;
-  gap: .75rem;
+  flex-direction: column;
+  gap: .5rem;
   margin-top: 1rem;
 }
+.stream-selector span,
 .stream-selector label {
   color: var(--muted);
   font-size: .92rem;
   font-weight: 700;
 }
-.stream-selector select {
-  min-width: 12rem;
-  border-radius: 8px;
-  border: 1px solid var(--line);
-  background: #0b1018;
+.stream-pills {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+.stream-pill {
+  appearance: none;
+  border: 1px solid rgba(239,35,60,.35);
+  background: transparent;
   color: var(--text);
-  padding: .7rem .85rem;
+  padding: .75rem 1.2rem;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s ease, color .2s ease, transform .2s ease;
+}
+.stream-pill:hover {
+  background: rgba(239,35,60,.12);
+}
+.stream-pill.active {
+  background: var(--red);
+  color: #fff;
+  border-color: var(--red);
+  transform: translateY(-1px);
+}
+.section-kicker {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .75rem;
+  width: 100%;
+  margin: 0;
+  color: var(--red);
+  font-size: .78rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+.live-status {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+}
+.viewers-count {
+  color: var(--text);
+  font-size: .95rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+}
+.viewers-count strong {
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  padding: .2rem .5rem;
+  border-radius: 999px;
+  background: rgba(239,35,60,.15);
 }
 .live-dot {
   width: .65rem;
@@ -178,6 +232,7 @@ button, input, textarea, select { font: inherit; }
   background: rgba(18,23,34,.82);
   border: 1px solid var(--line);
   border-radius: 8px;
+  text-align: center;
 }
 .sports-card, .player-card, .stat-card, .admin-card { padding: 1rem; }
 .sports-card h3, .player-card h3, .news-card h3 { margin: .2rem 0 .45rem; font-weight: 950; font-size: 1.18rem; }

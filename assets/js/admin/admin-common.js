@@ -40,6 +40,7 @@ export function renderNav() {
       ["noticias.html", "Noticias"],
       ["jugadores.html", "Jugadores"],
       ["partidos.html", "Partidos"],
+      ["resultados.html", "Resultados"],
       ["chat.html", "Chat"]
     ];
     target.innerHTML = `<a class="brand" href="../index.html"><span class="brand-mark">MTV</span><span>Mineros TV</span></a><nav class="admin-nav">${links.map(([href, label]) => `<a class="${current === href ? "active" : ""}" href="${href}">${label}</a>`).join("")}</nav>`;

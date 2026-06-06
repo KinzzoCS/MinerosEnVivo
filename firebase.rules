@@ -43,6 +43,16 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    match /viewers/{viewerId} {
+      allow read: if true;
+      allow create, update: if
+        cleanString(request.resource.data.streamId, 1, 80) &&
+        cleanString(request.resource.data.displayName, 1, 60) &&
+        request.resource.data.lastSeen is timestamp &&
+        request.resource.data.keys().hasOnly(["streamId", "displayName", "lastSeen"]);
+      allow delete: if true;
+    }
+
     match /bannedWords/{docId} {
       allow read: if true;
       allow write: if isAdmin();
