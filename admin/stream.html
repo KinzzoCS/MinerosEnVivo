@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Stream | Mineros TV</title><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="../assets/css/main.css"><link rel="stylesheet" href="../assets/css/admin.css"></head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar" data-admin-nav></aside>
+    <main class="admin-main">
+      <div class="admin-top"><h1>Gestion de stream</h1><button class="admin-button" data-logout>Salir</button></div>
+      <form class="admin-card admin-form" id="streamForm">
+        <label class="admin-field">Titulo<input id="liveTitle" required></label>
+        <label class="admin-field">URL de YouTube<input id="liveStreamUrl" required></label>
+        <label class="switch-line"><input id="liveStatus" type="checkbox"> En vivo activo</label>
+        <button class="admin-button" type="submit">Guardar stream</button>
+        <p class="form-note" id="formNote"></p>
+      </form>
+    </main>
+  </div>
+  <script type="module" src="../assets/js/admin/stream-admin.js"></script>
+</body>
+</html>

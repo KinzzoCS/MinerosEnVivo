@@ -1,0 +1,67 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function cleanString(value, min, max) {
+      return value is string && value.size() >= min && value.size() <= max;
+    }
+
+    match /admins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /news/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /players/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /matches/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /results/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /bannedWords/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /mutedUsers/{userId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /chatMessages/{messageId} {
+      allow read: if true;
+      allow create: if
+        cleanString(request.resource.data.userId, 8, 120) &&
+        cleanString(request.resource.data.displayName, 3, 28) &&
+        cleanString(request.resource.data.message, 1, 180) &&
+        request.resource.data.status == "visible" &&
+        request.resource.data.keys().hasOnly(["userId", "displayName", "message", "status", "createdAt"]);
+      allow update, delete: if isAdmin();
+    }
+  }
+}

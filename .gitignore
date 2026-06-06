@@ -1,0 +1,6 @@
+# Ignore local Firebase config with secrets
+assets/js/firebase-config.js
+
+# node / python caches (if used)
+node_modules/
+__pycache__/

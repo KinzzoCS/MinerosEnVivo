@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin | Mineros TV</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/admin.css">
+</head>
+<body>
+  <main class="admin-login">
+    <form class="admin-card login-card" id="loginForm">
+      <a class="brand" href="../index.html"><span class="brand-mark">MTV</span><span>Mineros TV</span></a>
+      <h1>Panel administrativo</h1>
+      <label class="admin-field">Correo<input id="email" type="email" required autocomplete="email"></label>
+      <label class="admin-field">Contrasena<input id="password" type="password" required autocomplete="current-password"></label>
+      <button class="admin-button" type="submit">Entrar</button>
+      <p class="form-note" id="authNote">Configura Firebase para habilitar acceso.</p>
+    </form>
+  </main>
+  <script type="module" src="../assets/js/admin/auth.js"></script>
+</body>
+</html>

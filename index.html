@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mineros TV | Transmisiones de Beisbol</title>
+  <meta name="description" content="Mineros TV: transmisiones en vivo, noticias, roster, resultados y comunidad del beisbol.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">MTV</span><span>Mineros TV</span></a>
+    <nav class="top-nav">
+      <a href="#partidos">Partidos</a>
+      <a href="#noticias">Noticias</a>
+      <a href="roster.html">Roster</a>
+      <a href="admin/index.html">Admin</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero-shell">
+      <div class="broadcast-panel">
+        <div class="section-kicker"><span class="live-dot"></span><span id="liveStatusLabel">Cargando directo</span></div>
+        <h1 id="liveTitle">Mineros TV en vivo</h1>
+        <div class="player-frame skeleton" id="playerFrame">
+          <iframe id="streamFrame" title="Transmision en vivo de Mineros TV" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <aside class="chat-panel">
+        <div class="chat-head">
+          <div>
+            <p class="section-kicker">Comunidad</p>
+            <h2>Chat en vivo</h2>
+          </div>
+          <button class="icon-button" id="renameBtn" title="Cambiar nombre">Editar</button>
+        </div>
+        <p class="identity-line">Publicas como <strong id="displayName">Minero</strong></p>
+        <div class="chat-feed" id="chatFeed" aria-live="polite"></div>
+        <form class="chat-form" id="chatForm">
+          <input id="chatInput" maxlength="180" autocomplete="off" placeholder="Escribe un mensaje">
+          <button type="submit">Enviar</button>
+        </form>
+        <p class="form-note" id="chatNote">Sin registro. Respeta a la comunidad minera.</p>
+      </aside>
+    </section>
+
+    <section class="content-band" id="partidos">
+      <div class="section-title">
+        <p class="section-kicker">Calendario</p>
+        <h2>Proximos partidos</h2>
+      </div>
+      <div class="sports-grid" id="matchesGrid"></div>
+    </section>
+
+    <section class="content-band">
+      <div class="section-title">
+        <p class="section-kicker">Marcador</p>
+        <h2>Ultimos resultados</h2>
+      </div>
+      <div class="results-list" id="resultsList"></div>
+    </section>
+
+    <section class="content-band" id="noticias">
+      <div class="section-title">
+        <p class="section-kicker">Actualidad</p>
+        <h2>Noticias destacadas</h2>
+      </div>
+      <div class="news-grid" id="newsGrid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>Mineros TV</span>
+    <span>Transmisiones, informacion y comunidad.</span>
+  </footer>
+
+  <script type="module" src="assets/js/app.js"></script>
+</body>
+</html>

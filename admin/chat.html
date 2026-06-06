@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Chat | Mineros TV</title><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="../assets/css/main.css"><link rel="stylesheet" href="../assets/css/admin.css"></head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar" data-admin-nav></aside>
+    <main class="admin-main">
+      <div class="admin-top"><h1>Moderacion del chat</h1><button class="admin-button" data-logout>Salir</button></div>
+      <form class="admin-card admin-form" id="wordForm">
+        <label class="admin-field">Palabra prohibida<input id="word" required></label>
+        <button class="admin-button" type="submit">Agregar palabra</button>
+      </form>
+      <section class="admin-list" id="wordsList"></section>
+      <section class="admin-list" id="messagesList"></section>
+    </main>
+  </div>
+  <script type="module" src="../assets/js/admin/chat-admin.js"></script>
+</body>
+</html>

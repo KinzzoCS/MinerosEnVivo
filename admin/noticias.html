@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Noticias | Mineros TV</title><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="../assets/css/main.css"><link rel="stylesheet" href="../assets/css/admin.css"></head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar" data-admin-nav></aside>
+    <main class="admin-main">
+      <div class="admin-top"><h1>Noticias</h1><button class="admin-button" data-logout>Salir</button></div>
+      <form class="admin-card admin-form" id="newsForm">
+        <input type="hidden" id="docId">
+        <label class="admin-field">Titulo<input id="title" required></label>
+        <label class="admin-field">Resumen<textarea id="summary" required rows="3"></textarea></label>
+        <label class="admin-field">Contenido<textarea id="content" required rows="7"></textarea></label>
+        <label class="admin-field">URL de imagen<input id="imageUrl" placeholder="https://..."></label>
+        <label class="switch-line"><input id="featured" type="checkbox" checked> Destacada</label>
+        <button class="admin-button" type="submit">Guardar noticia</button>
+      </form>
+      <section class="admin-list" id="itemsList"></section>
+    </main>
+  </div>
+  <script type="module" src="../assets/js/admin/news-admin.js"></script>
+</body>
+</html>

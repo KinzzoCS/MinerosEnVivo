@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jugadores | Mineros TV</title><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="../assets/css/main.css"><link rel="stylesheet" href="../assets/css/admin.css"></head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar" data-admin-nav></aside>
+    <main class="admin-main">
+      <div class="admin-top"><h1>Jugadores</h1><button class="admin-button" data-logout>Salir</button></div>
+      <form class="admin-card admin-form" id="playerForm">
+        <input type="hidden" id="docId">
+        <label class="admin-field">Nombre<input id="name" required></label>
+        <label class="admin-field">Posicion<input id="position" required></label>
+        <label class="admin-field">Numero<input id="number" type="number" min="0" required></label>
+        <label class="admin-field">Biografia<textarea id="bio" rows="4"></textarea></label>
+        <label class="admin-field">URL de fotografia<input id="photoUrl" placeholder="https://..."></label>
+        <button class="admin-button" type="submit">Guardar jugador</button>
+      </form>
+      <section class="admin-list" id="itemsList"></section>
+    </main>
+  </div>
+  <script type="module" src="../assets/js/admin/players-admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Partidos | Mineros TV</title><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="../assets/css/main.css"><link rel="stylesheet" href="../assets/css/admin.css"></head>
+<body>
+  <div class="admin-layout">
+    <aside class="admin-sidebar" data-admin-nav></aside>
+    <main class="admin-main">
+      <div class="admin-top"><h1>Partidos y resultados</h1><button class="admin-button" data-logout>Salir</button></div>
+      <form class="admin-card admin-form" id="matchForm">
+        <input type="hidden" id="docId">
+        <label class="admin-field">Rival<input id="rival" required></label>
+        <label class="admin-field">Fecha<input id="date" type="date" required></label>
+        <label class="admin-field">Hora<input id="time" type="time" required></label>
+        <label class="admin-field">Estadio<input id="stadium" required></label>
+        <label class="admin-field">Torneo<input id="tournament" required></label>
+        <button class="admin-button" type="submit">Guardar partido</button>
+      </form>
+      <section class="admin-list" id="itemsList"></section>
+      <form class="admin-card admin-form" id="resultForm">
+        <h2>Registrar resultado</h2>
+        <label class="admin-field">Local<input id="home" value="Mineros" required></label>
+        <label class="admin-field">Visitante<input id="away" required></label>
+        <label class="admin-field">Carreras local<input id="homeScore" type="number" min="0" required></label>
+        <label class="admin-field">Carreras visitante<input id="awayScore" type="number" min="0" required></label>
+        <label class="admin-field">Fecha<input id="resultDate" type="date" required></label>
+        <button class="admin-button" type="submit">Guardar resultado</button>
+      </form>
+    </main>
+  </div>
+  <script type="module" src="../assets/js/admin/matches-admin.js"></script>
+</body>
+</html>
