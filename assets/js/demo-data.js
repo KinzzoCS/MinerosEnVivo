@@ -1,7 +1,11 @@
 export const demoSettings = {
-  liveStreamUrl: "https://www.youtube.com/embed/live_stream?channel=UC4R8DWoMoI7CAwX8_LjQHig",
-  liveStatus: true,
-  liveTitle: "Mineros vs Dorados - Juego de preparacion"
+  activeStream: "1",
+  liveStreamUrl1: "https://www.youtube.com/embed/live_stream?channel=UC4R8DWoMoI7CAwX8_LjQHig",
+  liveStatus1: true,
+  liveTitle1: "Mineros vs Dorados - Juego de preparacion",
+  liveStreamUrl2: "https://www.youtube.com/embed/live_stream?channel=UC4R8DWoMoI7CAwX8_LjQHig",
+  liveStatus2: false,
+  liveTitle2: "Segundo stream - Comentarios alternativos"
 };
 
 export const demoMatches = [

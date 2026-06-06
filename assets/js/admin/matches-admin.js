@@ -10,7 +10,10 @@ function init(firebase) {
   let docs = [];
   firestore.onSnapshot(firestore.query(col, firestore.orderBy("date", "asc")), snap => {
     docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    qs("#itemsList").innerHTML = docs.map(item => rowTemplate(`Mineros vs ${item.rival}`, `${item.date} · ${item.time} · ${item.stadium}`, item.id)).join("");
+    qs("#itemsList").innerHTML = docs.map(item => {
+      const title = item.minerIsAway ? `${sanitizeText(item.rival, 42)} vs Mineros` : `Mineros vs ${sanitizeText(item.rival, 42)}`;
+      return rowTemplate(title, `${item.date} · ${item.time} · ${sanitizeText(item.stadium || "Estadio por definir", 60)}`, item.id);
+    }).join("");
   });
   qs("#itemsList").addEventListener("click", async event => {
     const item = docs.find(row => row.id === event.target.dataset.edit);
@@ -26,6 +29,7 @@ function init(firebase) {
       time: qs("#time").value,
       stadium: sanitizeText(qs("#stadium").value, 80),
       tournament: sanitizeText(qs("#tournament").value, 80),
+      minerIsAway: Boolean(qs("#isAway").checked),
       updatedAt: firestore.serverTimestamp()
     }, { merge: true });
     qs("#matchForm").reset();
@@ -52,4 +56,5 @@ function fillMatch(item) {
   qs("#time").value = item.time || "";
   qs("#stadium").value = item.stadium || "";
   qs("#tournament").value = item.tournament || "";
+  qs("#isAway").checked = Boolean(item.minerIsAway);
 }

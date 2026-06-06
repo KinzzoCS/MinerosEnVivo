@@ -7,9 +7,20 @@
     <main class="admin-main">
       <div class="admin-top"><h1>Gestion de stream</h1><button class="admin-button" data-logout>Salir</button></div>
       <form class="admin-card admin-form" id="streamForm">
-        <label class="admin-field">Titulo<input id="liveTitle" required></label>
-        <label class="admin-field">URL de YouTube<input id="liveStreamUrl" required></label>
-        <label class="switch-line"><input id="liveStatus" type="checkbox"> En vivo activo</label>
+        <label class="admin-field">Stream activo
+          <select id="activeStream">
+            <option value="1">Mineros TV</option>
+            <option value="2">La Poderosa De Parral</option>
+          </select>
+        </label>
+        <div class="admin-field"><strong>Stream 1</strong></div>
+        <label class="admin-field">Titulo principal<input id="liveTitle1" required></label>
+        <label class="admin-field">URL de YouTube principal<input id="liveStreamUrl1" required></label>
+        <label class="switch-line"><input id="liveStatus1" type="checkbox"> En vivo activo</label>
+        <div class="admin-field"><strong>Stream 2</strong></div>
+        <label class="admin-field">Titulo secundario<input id="liveTitle2"></label>
+        <label class="admin-field">URL de YouTube secundario<input id="liveStreamUrl2"></label>
+        <label class="switch-line"><input id="liveStatus2" type="checkbox"> En vivo activo</label>
         <button class="admin-button" type="submit">Guardar stream</button>
         <p class="form-note" id="formNote"></p>
       </form>

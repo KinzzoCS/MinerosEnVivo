@@ -23,6 +23,13 @@
     <section class="hero-shell">
       <div class="broadcast-panel">
         <div class="section-kicker"><span class="live-dot"></span><span id="liveStatusLabel">Cargando directo</span></div>
+        <div class="stream-selector">
+          <label for="streamSelect">Transmisión</label>
+          <select id="streamSelect">
+            <option value="1">Mineros TV</option>
+            <option value="2">La Poderosa De Parral</option>
+          </select>
+        </div>
         <h1 id="liveTitle">Mineros TV en vivo</h1>
         <div class="player-frame skeleton" id="playerFrame">
           <iframe id="streamFrame" title="Transmision en vivo de Mineros TV" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>

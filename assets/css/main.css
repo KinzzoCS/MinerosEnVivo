@@ -6,8 +6,8 @@
   --line: rgba(255,255,255,.11);
   --text: #f6f7fb;
   --muted: #aab2c0;
-  --gold: #d6a034;
-  --copper: #b86b2b;
+  --gold: #ef233c;
+  --copper: #cc172c;
   --red: #ef233c;
   --green: #2bd576;
 }
@@ -42,9 +42,9 @@ button, input, textarea, select { font: inherit; }
   place-items: center;
   width: 2.35rem;
   height: 2.35rem;
-  border: 1px solid rgba(214,160,52,.55);
-  background: linear-gradient(135deg, var(--gold), var(--copper));
-  color: #12100a;
+  border: 1px solid rgba(239,35,60,.55);
+  background: linear-gradient(135deg, var(--red), #b21a30);
+  color: #f8f8f8;
   border-radius: 8px;
   font-size: .78rem;
 }
@@ -79,11 +79,30 @@ button, input, textarea, select { font: inherit; }
   align-items: center;
   gap: .45rem;
   margin: 0;
-  color: var(--gold);
+  color: var(--red);
   font-size: .78rem;
   font-weight: 900;
   letter-spacing: 0;
   text-transform: uppercase;
+}
+.stream-selector {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-top: 1rem;
+}
+.stream-selector label {
+  color: var(--muted);
+  font-size: .92rem;
+  font-weight: 700;
+}
+.stream-selector select {
+  min-width: 12rem;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #0b1018;
+  color: var(--text);
+  padding: .7rem .85rem;
 }
 .live-dot {
   width: .65rem;
@@ -108,8 +127,8 @@ button, input, textarea, select { font: inherit; }
 .chat-head h2, .section-title h2 { margin: .2rem 0 0; font-size: 1.4rem; font-weight: 900; }
 .icon-button, .chat-form button, .admin-button {
   border: 0;
-  color: #141006;
-  background: linear-gradient(135deg, var(--gold), var(--copper));
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--red), #b21a30);
   border-radius: 8px;
   padding: .7rem .9rem;
   font-weight: 900;
@@ -131,7 +150,7 @@ button, input, textarea, select { font: inherit; }
   border: 1px solid rgba(255,255,255,.08);
   border-radius: 8px;
 }
-.chat-message strong { color: var(--gold); display: block; font-size: .82rem; }
+.chat-message strong { color: var(--red); display: block; font-size: .82rem; }
 .chat-message span { color: var(--text); overflow-wrap: anywhere; }
 .chat-form { display: grid; grid-template-columns: 1fr auto; gap: .55rem; }
 .chat-form input, .admin-field input, .admin-field textarea, .admin-field select {
@@ -143,7 +162,7 @@ button, input, textarea, select { font: inherit; }
   padding: .82rem .9rem;
   outline: none;
 }
-.chat-form input:focus, .admin-field input:focus, .admin-field textarea:focus { border-color: rgba(214,160,52,.7); }
+.chat-form input:focus, .admin-field input:focus, .admin-field textarea:focus { border-color: rgba(239,35,60,.7); }
 .content-band {
   max-width: 1440px;
   margin: 0 auto;
@@ -163,10 +182,10 @@ button, input, textarea, select { font: inherit; }
 .sports-card, .player-card, .stat-card, .admin-card { padding: 1rem; }
 .sports-card h3, .player-card h3, .news-card h3 { margin: .2rem 0 .45rem; font-weight: 950; font-size: 1.18rem; }
 .meta { color: var(--muted); font-size: .9rem; }
-.badge { display: inline-flex; width: fit-content; padding: .28rem .48rem; border-radius: 999px; background: rgba(214,160,52,.14); color: var(--gold); font-size: .75rem; font-weight: 900; }
+.badge { display: inline-flex; width: fit-content; padding: .28rem .48rem; border-radius: 999px; background: rgba(239,35,60,.12); color: var(--red); font-size: .75rem; font-weight: 900; }
 .results-list { display: grid; gap: .65rem; }
 .result-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: .75rem; align-items: center; padding: 1rem; }
-.score { font-size: 1.7rem; font-weight: 950; color: var(--gold); }
+.score { font-size: 1.7rem; font-weight: 950; color: var(--red); }
 .news-card { overflow: hidden; }
 .news-card img, .player-card img, .article-hero-img {
   width: 100%;

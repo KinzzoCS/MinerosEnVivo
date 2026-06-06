@@ -5,7 +5,7 @@ qs("#loginForm").addEventListener("submit", async event => {
   event.preventDefault();
   const firebase = await getFirebase();
   if (!firebase) {
-    qs("#authNote").textContent = "Firebase no esta configurado todavia.";
+    qs("#authNote").textContent = "Acceso no disponible.";
     return;
   }
   try {

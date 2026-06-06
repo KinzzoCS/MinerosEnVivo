@@ -6,7 +6,7 @@ export async function requireAdmin() {
   bindLogout();
   const firebase = await getFirebase();
   if (!firebase) {
-    alert("Configura Firebase en assets/js/firebase-config.js para usar el panel.");
+    alert("Panel no disponible.");
     location.href = "index.html";
     return null;
   }
