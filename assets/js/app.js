@@ -91,8 +91,8 @@ function updateViewerPresence() {
   firestore.setDoc(viewerRef, {
     streamId: state.streamId,
     displayName: state.identity.name,
-    lastSeen: firestore.serverTimestamp()
-  }, { merge: true }).catch(err => console.error("[Viewers] initial setDoc error:", err));
+    lastSeen: new Date()
+  }).catch(err => console.error("[Viewers] initial setDoc error:", err));
 
   if (!viewerIntervalId) {
     viewerIntervalId = setInterval(() => {
@@ -101,8 +101,8 @@ function updateViewerPresence() {
       firestore.setDoc(ref, {
         streamId: state.streamId,
         displayName: state.identity.name,
-        lastSeen: firestore.serverTimestamp()
-      }, { merge: true }).catch(err => console.error("[Viewers] heartbeat error:", err));
+        lastSeen: new Date()
+      }).catch(err => console.error("[Viewers] heartbeat error:", err));
     }, 15000);
   }
 
