@@ -11,7 +11,7 @@ function init(firebase) {
   firestore.onSnapshot(firestore.query(col, firestore.orderBy("date", "asc")), snap => {
     docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     qs("#itemsList").innerHTML = docs.map(item => {
-      const title = `Mineros vs ${sanitizeText(item.rival, 42)}`;
+      const title = item.minerIsAway ? `Mineros vs ${sanitizeText(item.rival, 42)}` : `${sanitizeText(item.rival, 42)} vs Mineros`;
       return rowTemplate(title, `${item.date} · ${item.time} · ${sanitizeText(item.stadium || "Estadio por definir", 60)}`, item.id);
     }).join("");
   });
