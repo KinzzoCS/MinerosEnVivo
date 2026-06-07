@@ -6,6 +6,12 @@
     <aside class="admin-sidebar" data-admin-nav></aside>
     <main class="admin-main">
       <div class="admin-top"><h1>Moderacion del chat</h1><button class="admin-button" data-logout>Salir</button></div>
+      <div class="admin-card" style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem">
+        <button class="admin-button" data-stream-filter="1">Stream 1</button>
+        <button class="admin-button" data-stream-filter="2">Stream 2</button>
+        <button class="admin-button" data-stream-filter="all" style="background:var(--accent);color:#fff">Todos</button>
+        <button class="danger-button" data-clear-chat style="margin-left:auto">Limpiar chat</button>
+      </div>
       <form class="admin-card admin-form" id="wordForm">
         <label class="admin-field">Palabra prohibida<input id="word" required></label>
         <button class="admin-button" type="submit">Agregar palabra</button>
