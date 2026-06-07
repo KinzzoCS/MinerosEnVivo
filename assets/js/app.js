@@ -119,6 +119,8 @@ function subscribeViewerCount() {
     const count = snap.size;
     const label = qs("#viewersCount");
     if (label) label.textContent = String(count);
+  }, error => {
+    console.error("Viewer count error:", error);
   });
 }
 
