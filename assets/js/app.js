@@ -137,17 +137,13 @@ function subscribeViewerCount() {
 }
 
 function renderMatches(matches) {
-  qs("#matchesGrid").innerHTML = matches.map(item => {
-    const localTeam = item.minerIsAway ? sanitizeText(item.rival, 42) : "Mineros";
-    const visitorTeam = item.minerIsAway ? "Mineros" : sanitizeText(item.rival, 42);
-    return `
-      <article class="sports-card">
-        <span class="badge">${sanitizeText(item.tournament || "Temporada", 40)}</span>
-        <h3>${localTeam} vs ${visitorTeam}</h3>
-        <p class="meta">${formatDate(item.date)} · ${sanitizeText(item.time || "Hora por definir", 20)}</p>
-        <p class="meta">${sanitizeText(item.stadium || "Estadio por definir", 60)}</p>
-      </article>`;
-  }).join("");
+  qs("#matchesGrid").innerHTML = matches.map(item => `
+    <article class="sports-card">
+      <span class="badge">${sanitizeText(item.tournament || "Temporada", 40)}</span>
+      <h3>Mineros vs ${sanitizeText(item.rival, 42)}</h3>
+      <p class="meta">${formatDate(item.date)} · ${sanitizeText(item.time || "Hora por definir", 20)}</p>
+      <p class="meta">${sanitizeText(item.stadium || "Estadio por definir", 60)}</p>
+    </article>`).join("");
 }
 
 function renderResults(results) {
