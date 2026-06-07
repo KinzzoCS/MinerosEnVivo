@@ -4,3 +4,6 @@ assets/js/firebase-config.js
 # node / python caches (if used)
 node_modules/
 __pycache__/
+
+# Firebase cache
+.firebase/
