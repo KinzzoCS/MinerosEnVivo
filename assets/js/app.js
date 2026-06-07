@@ -8,7 +8,7 @@ let chatUnsubscribe = null;
 let firebaseApp = null;
 let viewerDocId = "";
 let viewerIntervalId = null;
-let viewerUnsubscribe = null;
+let viewerCountIntervalId = null;
 const VIEWER_STALE_SECONDS = 60;
 
 init();
@@ -107,25 +107,32 @@ function updateViewerPresence() {
   subscribeViewerCount();
 }
 
-function subscribeViewerCount() {
+async function fetchViewerCount() {
   if (!firebaseApp || !state.streamId) return;
   const { db, firestore } = firebaseApp;
-  if (viewerUnsubscribe) viewerUnsubscribe();
-  const cutoff = firestore.Timestamp.fromDate(new Date(Date.now() - VIEWER_STALE_SECONDS * 1000));
-  const q = firestore.query(
-    firestore.collection(db, "viewers"),
-    firestore.where("streamId", "==", state.streamId),
-    firestore.where("lastSeen", ">=", cutoff)
-  );
-  viewerUnsubscribe = firestore.onSnapshot(q, snap => {
+  try {
+    const cutoff = firestore.Timestamp.fromDate(new Date(Date.now() - VIEWER_STALE_SECONDS * 1000));
+    const q = firestore.query(
+      firestore.collection(db, "viewers"),
+      firestore.where("streamId", "==", state.streamId),
+      firestore.where("lastSeen", ">=", cutoff)
+    );
+    const snap = await firestore.getDocs(q);
     const count = snap.size;
     const label = qs("#viewersCount");
     const container = document.querySelector(".viewers-count");
     if (container) container.style.display = count > 0 ? "" : "none";
     if (label) label.textContent = String(count);
-  }, error => {
+  } catch (error) {
     console.error("Viewer count error:", error);
-  });
+  }
+}
+
+function subscribeViewerCount() {
+  if (!firebaseApp || !state.streamId) return;
+  if (viewerCountIntervalId) clearInterval(viewerCountIntervalId);
+  fetchViewerCount();
+  viewerCountIntervalId = setInterval(fetchViewerCount, 10000);
 }
 
 function renderMatches(matches) {
