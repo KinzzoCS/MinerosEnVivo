@@ -92,17 +92,16 @@ function updateViewerPresence() {
     streamId: state.streamId,
     displayName: state.identity.name,
     lastSeen: new Date()
-  }).catch(err => console.error("[Viewers] initial setDoc error:", err));
+  });
 
   if (!viewerIntervalId) {
     viewerIntervalId = setInterval(() => {
-      console.log("[Viewers] heartbeat firing, docId:", viewerDocId);
       const ref = firestore.doc(db, "viewers", viewerDocId);
       firestore.setDoc(ref, {
         streamId: state.streamId,
         displayName: state.identity.name,
         lastSeen: new Date()
-      }).catch(err => console.error("[Viewers] heartbeat error:", err));
+      });
     }, 15000);
   }
 
@@ -110,26 +109,23 @@ function updateViewerPresence() {
 }
 
 async function fetchViewerCount() {
-  console.log(`[Viewers] fetch (stream=${state.streamId}, fb=${!!firebaseApp})`);
   if (!firebaseApp || !state.streamId) return;
   const { db, firestore } = firebaseApp;
   try {
     const cutoff = firestore.Timestamp.fromDate(new Date(Date.now() - VIEWER_STALE_SECONDS * 1000));
-    console.log(`[Viewers] cutoff=${cutoff.toDate().toISOString()}`);
     const q = firestore.query(
       firestore.collection(db, "viewers"),
       firestore.where("streamId", "==", state.streamId),
       firestore.where("lastSeen", ">=", cutoff)
     );
     const snap = await firestore.getDocs(q);
-    console.log(`[Viewers] snap.size=${snap.size} empty=${snap.empty}`);
     const count = snap.size;
     const label = qs("#viewersCount");
     const container = document.querySelector(".viewers-count");
     if (container) container.style.display = count > 0 ? "" : "none";
     if (label) label.textContent = String(count);
   } catch (error) {
-    console.error("[Viewers] ERROR:", error);
+    console.error("Viewer count error:", error);
   }
 }
 
