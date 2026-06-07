@@ -108,23 +108,26 @@ function updateViewerPresence() {
 }
 
 async function fetchViewerCount() {
+  console.log(`[Viewers] fetch (stream=${state.streamId}, fb=${!!firebaseApp})`);
   if (!firebaseApp || !state.streamId) return;
   const { db, firestore } = firebaseApp;
   try {
     const cutoff = firestore.Timestamp.fromDate(new Date(Date.now() - VIEWER_STALE_SECONDS * 1000));
+    console.log(`[Viewers] cutoff=${cutoff.toDate().toISOString()}`);
     const q = firestore.query(
       firestore.collection(db, "viewers"),
       firestore.where("streamId", "==", state.streamId),
       firestore.where("lastSeen", ">=", cutoff)
     );
     const snap = await firestore.getDocs(q);
+    console.log(`[Viewers] snap.size=${snap.size} empty=${snap.empty}`);
     const count = snap.size;
     const label = qs("#viewersCount");
     const container = document.querySelector(".viewers-count");
     if (container) container.style.display = count > 0 ? "" : "none";
     if (label) label.textContent = String(count);
   } catch (error) {
-    console.error("Viewer count error:", error);
+    console.error("[Viewers] ERROR:", error);
   }
 }
 
