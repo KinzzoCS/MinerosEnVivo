@@ -148,3 +148,7 @@ https://TU_USUARIO.github.io/NOMBRE_REPO/
 ## Notas de seguridad
 
 La V1 incluye sanitizacion en cliente, limite basico entre mensajes, palabras prohibidas, silenciado temporal y reglas que validan forma/tamano de mensajes. Para mantener todo en plan gratis, no se usa Firebase Storage; las imagenes se cargan mediante URL.
+
+---
+
+**Desarrollado con mucho café y un poco de IA** 🤖☕ — porque hasta los devs de verdad necesitan un copiloto de vez en cuando.
