@@ -11,7 +11,8 @@
       "firestore.indexes.json",
       "storage.rules",
       ".github/**",
-      ".git/**"
+      ".git/**",
+      ".venv/**"
     ],
     "cleanUrls": true,
     "trailingSlash": false
