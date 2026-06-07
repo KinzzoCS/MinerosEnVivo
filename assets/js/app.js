@@ -9,7 +9,7 @@ let firebaseApp = null;
 let viewerDocId = "";
 let viewerIntervalId = null;
 let viewerUnsubscribe = null;
-const VIEWER_STALE_SECONDS = 35;
+const VIEWER_STALE_SECONDS = 60;
 
 init();
 
@@ -26,6 +26,7 @@ async function init() {
   listenModeration(firebase);
   initViewerPresence(firebase);
   if (state.streamId) updateViewerPresence();
+  subscribeViewerCount();
 }
 
 function renderFallback() {
@@ -119,6 +120,8 @@ function subscribeViewerCount() {
   viewerUnsubscribe = firestore.onSnapshot(q, snap => {
     const count = snap.size;
     const label = qs("#viewersCount");
+    const container = document.querySelector(".viewers-count");
+    if (container) container.style.display = count > 0 ? "" : "none";
     if (label) label.textContent = String(count);
   }, error => {
     console.error("Viewer count error:", error);
