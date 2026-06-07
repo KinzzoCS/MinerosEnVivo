@@ -25,6 +25,7 @@ async function init() {
   listenChat(firebase);
   listenModeration(firebase);
   initViewerPresence(firebase);
+  if (state.streamId) updateViewerPresence();
 }
 
 function renderFallback() {
