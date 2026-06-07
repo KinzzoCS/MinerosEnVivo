@@ -94,7 +94,11 @@ function updateViewerPresence() {
 
   if (!viewerIntervalId) {
     viewerIntervalId = setInterval(() => {
-      firestore.setDoc(viewerRef, { lastSeen: firestore.serverTimestamp() }, { merge: true });
+      firestore.setDoc(viewerRef, {
+        streamId: state.streamId,
+        displayName: state.identity.name,
+        lastSeen: firestore.serverTimestamp()
+      }, { merge: true });
     }, 15000);
   }
 

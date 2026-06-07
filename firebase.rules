@@ -48,7 +48,6 @@ service cloud.firestore {
       allow create, update: if
         cleanString(request.resource.data.streamId, 1, 80) &&
         cleanString(request.resource.data.displayName, 1, 60) &&
-        request.resource.data.lastSeen is timestamp &&
         request.resource.data.keys().hasOnly(["streamId", "displayName", "lastSeen"]);
       allow delete: if true;
     }
@@ -69,8 +68,9 @@ service cloud.firestore {
         cleanString(request.resource.data.userId, 8, 120) &&
         cleanString(request.resource.data.displayName, 3, 28) &&
         cleanString(request.resource.data.message, 1, 180) &&
+        cleanString(request.resource.data.streamId, 1, 80) &&
         request.resource.data.status == "visible" &&
-        request.resource.data.keys().hasOnly(["userId", "displayName", "message", "status", "createdAt"]);
+        request.resource.data.keys().hasOnly(["userId", "displayName", "message", "streamId", "status", "createdAt"]);
       allow update, delete: if isAdmin();
     }
   }
