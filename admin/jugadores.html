@@ -12,7 +12,9 @@
         <label class="admin-field">Posicion<input id="position" required></label>
         <label class="admin-field">Numero<input id="number" type="number" min="0" required></label>
         <label class="admin-field">Biografia<textarea id="bio" rows="4"></textarea></label>
-        <label class="admin-field">URL de fotografia<input id="photoUrl" placeholder="https://..."></label>
+        <label class="admin-field">Foto<input id="photoFile" type="file" accept="image/*"></label>
+        <img id="photoPreview" class="admin-img-preview" style="display:none">
+        <label class="admin-field">O URL externa<input id="photoUrl" placeholder="https://..."></label>
         <button class="admin-button" type="submit">Guardar jugador</button>
       </form>
       <section class="admin-list" id="itemsList"></section>

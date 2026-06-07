@@ -32,6 +32,7 @@
 .admin-field { display: grid; gap: .38rem; color: var(--muted); font-size: .9rem; font-weight: 700; }
 .switch-line { display: flex; gap: .6rem; align-items: center; color: var(--muted); }
 .admin-list { display: grid; gap: .65rem; margin: 1rem 0; }
+.admin-img-preview { max-width: 240px; max-height: 160px; border-radius: .5rem; object-fit: cover; border: 1px solid var(--border); }
 .admin-row {
   display: grid;
   grid-template-columns: 1fr auto;

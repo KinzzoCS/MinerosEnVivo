@@ -1,5 +1,6 @@
 import { requireAdmin, rowTemplate } from "./admin-common.js";
 import { qs, sanitizeText } from "../utils.js";
+import { compressImage } from "../compress-image.js";
 
 const firebase = await requireAdmin();
 if (firebase) init(firebase);
@@ -9,6 +10,7 @@ function init(firebase) {
   const col = firestore.collection(db, "news");
   const form = qs("#newsForm");
   let docs = [];
+  let compressedImage = null;
 
   firestore.onSnapshot(firestore.query(col, firestore.orderBy("date", "desc")), snap => {
     docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -22,6 +24,24 @@ function init(firebase) {
     if (deleteId && confirm("Eliminar noticia?")) await firestore.deleteDoc(firestore.doc(db, "news", deleteId));
   });
 
+  qs("#imageFile").addEventListener("change", async event => {
+    const file = event.target.files[0];
+    if (!file) return;
+    compressedImage = await compressImage(file);
+    const preview = qs("#imagePreview");
+    preview.src = compressedImage;
+    preview.style.display = "block";
+    qs("#imageUrl").value = "";
+  });
+
+  qs("#imageUrl").addEventListener("input", () => {
+    if (qs("#imageUrl").value) {
+      compressedImage = null;
+      qs("#imageFile").value = "";
+      qs("#imagePreview").style.display = "none";
+    }
+  });
+
   form.addEventListener("submit", async event => {
     event.preventDefault();
     const id = qs("#docId").value || slugify(qs("#title").value);
@@ -29,7 +49,7 @@ function init(firebase) {
       title: sanitizeText(qs("#title").value, 120),
       summary: sanitizeText(qs("#summary").value, 240),
       content: sanitizeText(qs("#content").value, 5000),
-      imageUrl: sanitizeText(qs("#imageUrl").value, 500),
+      imageUrl: compressedImage || sanitizeText(qs("#imageUrl").value, 500) || "",
       featured: qs("#featured").checked,
       date: firestore.serverTimestamp(),
       updatedAt: firestore.serverTimestamp()
@@ -37,6 +57,8 @@ function init(firebase) {
     await firestore.setDoc(firestore.doc(db, "news", id), payload, { merge: true });
     form.reset();
     qs("#docId").value = "";
+    compressedImage = null;
+    qs("#imagePreview").style.display = "none";
   });
 }
 
@@ -47,6 +69,15 @@ function fillForm(item) {
   qs("#content").value = item.content || "";
   qs("#imageUrl").value = item.imageUrl || "";
   qs("#featured").checked = Boolean(item.featured);
+  qs("#imageFile").value = "";
+  compressedImage = null;
+  const preview = qs("#imagePreview");
+  if (item.imageUrl && item.imageUrl.startsWith("data:")) {
+    preview.src = item.imageUrl;
+    preview.style.display = "block";
+  } else {
+    preview.style.display = "none";
+  }
 }
 
 function slugify(value) {

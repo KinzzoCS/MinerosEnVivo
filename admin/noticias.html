@@ -11,7 +11,9 @@
         <label class="admin-field">Titulo<input id="title" required></label>
         <label class="admin-field">Resumen<textarea id="summary" required rows="3"></textarea></label>
         <label class="admin-field">Contenido<textarea id="content" required rows="7"></textarea></label>
-        <label class="admin-field">URL de imagen<input id="imageUrl" placeholder="https://..."></label>
+        <label class="admin-field">Imagen<input id="imageFile" type="file" accept="image/*"></label>
+        <img id="imagePreview" class="admin-img-preview" style="display:none">
+        <label class="admin-field">O URL externa<input id="imageUrl" placeholder="https://..."></label>
         <label class="switch-line"><input id="featured" type="checkbox" checked> Destacada</label>
         <button class="admin-button" type="submit">Guardar noticia</button>
       </form>
