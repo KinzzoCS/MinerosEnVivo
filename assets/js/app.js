@@ -92,15 +92,17 @@ function updateViewerPresence() {
     streamId: state.streamId,
     displayName: state.identity.name,
     lastSeen: firestore.serverTimestamp()
-  }, { merge: true });
+  }, { merge: true }).catch(err => console.error("[Viewers] initial setDoc error:", err));
 
   if (!viewerIntervalId) {
     viewerIntervalId = setInterval(() => {
-      firestore.setDoc(viewerRef, {
+      console.log("[Viewers] heartbeat firing, docId:", viewerDocId);
+      const ref = firestore.doc(db, "viewers", viewerDocId);
+      firestore.setDoc(ref, {
         streamId: state.streamId,
         displayName: state.identity.name,
         lastSeen: firestore.serverTimestamp()
-      }, { merge: true });
+      }, { merge: true }).catch(err => console.error("[Viewers] heartbeat error:", err));
     }, 15000);
   }
 
