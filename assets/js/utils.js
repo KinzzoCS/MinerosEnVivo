@@ -8,7 +8,16 @@ export function sanitizeText(value, max = 500) {
 
 export function formatDate(value) {
   if (!value) return "Fecha por definir";
-  const date = value.toDate ? value.toDate() : new Date(value);
+  let date;
+  if (value.toDate) {
+    date = value.toDate();
+  } else if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    // Treat plain YYYY-MM-DD as a local date (avoid UTC parse that shifts day)
+    const [y, m, d] = value.split("-").map(Number);
+    date = new Date(y, m - 1, d);
+  } else {
+    date = new Date(value);
+  }
   return new Intl.DateTimeFormat("es-MX", { dateStyle: "medium" }).format(date);
 }
 
