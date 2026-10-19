@@ -1,0 +1,1075 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Panel De Control — Pizarra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Barlow+Condensed:wght@500;700;800&family=Bangers&family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Rajdhani:wght@600;700&family=Rubik:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Teko:wght@500;600;700&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Innings matrix (generada por JS) ── */
+    .inning-table { display: grid; gap: 5px; min-width: 640px; }
+    .inning-table-row {
+      display: grid;
+      grid-template-columns: 52px;
+      grid-auto-columns: 1fr;
+      grid-auto-flow: column;
+      gap: 5px;
+      min-height: 90px;
+    }
+    .inning-table-row > span {
+      display: grid;
+      place-items: center;
+      background: #1c2620;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 14px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+    }
+    .inning-table-row.head > span { background: var(--bg); }
+    .it-cell {
+      display: grid;
+      grid-template-rows: 28px 1fr 28px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: #252733;
+      overflow: hidden;
+    }
+    .it-cell button {
+      padding: 0;
+      font-size: 22px;
+      font-weight: 700;
+      border-radius: 0;
+      background: #1c1e26;
+      color: var(--text);
+    }
+    .it-cell button:hover { background: #2e3040; }
+    .it-cell span {
+      display: grid;
+      place-items: center;
+      font-family: var(--mono);
+      font-size: 30px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── RHE controls (generados por JS) ── */
+    .control-row {
+      display: grid;
+      grid-template-columns: 50px 1fr 1fr;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .control-row strong {
+      font-family: var(--mono);
+      font-size: 28px;
+      color: var(--accent);
+      text-align: center;
+    }
+    .btn-row { display: flex; gap: 6px; align-items: center; }
+    .btn-row button { flex: 1; }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #111217;
+      --surface:  #1c1e26;
+      --border:   #2e3040;
+      --accent:   #f3c640;
+      --accent2:  #4f8ef7;
+      --danger:   #c93a3a;
+      --success:  #3acf7f;
+      --text:     #e8eaf2;
+      --muted:    #888ca4;
+      --font:     "Barlow Condensed", sans-serif;
+      --mono:     "Teko", sans-serif;
+      --radius:   10px;
+    }
+
+    html { height: 100%; overflow: auto; scroll-behavior: smooth; }
+    body {
+      min-height: 100%;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 17px;
+      overflow: visible;
+    }
+
+    /* ── Layout ── */
+    .page {
+      min-height: 100vh;
+      overflow: visible;
+    }
+
+    .topbar {
+      background: var(--surface);
+      border-bottom: 2px solid var(--accent);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .topbar h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: var(--accent);
+    }
+
+    .topbar a {
+      color: var(--accent2);
+      font-size: 15px;
+      text-decoration: none;
+    }
+    .topbar a:hover { text-decoration: underline; }
+
+    .grid-main {
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 0;
+    }
+
+    /* ── Sidebar izquierda ── */
+    .sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    /* ── Main content ── */
+    .main-content {
+      min-width: 0;
+    }
+
+    /* ── Sections / Cards ── */
+    .section {
+      border-bottom: 1px solid var(--border);
+      padding: 18px 20px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 14px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── BSO & Conteo ── */
+    .bso-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .bso-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 6px;
+      text-align: center;
+    }
+
+    .bso-card label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .bso-num {
+      font-family: var(--mono);
+      font-size: 64px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .bso-btns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
+
+    /* ── Inning strip ── */
+    .inning-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      margin-bottom: 10px;
+    }
+
+    .inning-strip label {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 1px;
+    }
+
+    .inning-num-display {
+      font-family: var(--mono);
+      font-size: 48px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    .half-display {
+      font-family: var(--mono);
+      font-size: 32px;
+      color: var(--accent2);
+      min-width: 80px;
+    }
+
+    /* ── Buttons ── */
+    button {
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 12px;
+      cursor: pointer;
+      background: #2e3040;
+      color: var(--text);
+      transition: background 0.15s, transform 0.1s;
+    }
+    button:hover { background: #3a3d52; }
+    button:active { transform: scale(0.96); }
+    button.accent  { background: var(--accent); color: #111; }
+    button.accent:hover { background: #e6b820; }
+    button.accent2 { background: var(--accent2); color: #fff; }
+    button.danger  { background: var(--danger); color: #fff; }
+    button.danger:hover { background: #a82e2e; }
+    button.success { background: var(--success); color: #111; }
+    button.active  { background: var(--accent); color: #111; }
+
+    .btn-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .btn-row-full {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    /* ── Form elements ── */
+    label.field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 0.5px;
+    }
+
+    label.field input,
+    label.field select {
+      font-family: var(--font);
+      font-size: 16px;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+
+    label.field input[type="color"] {
+      height: 40px;
+      padding: 2px 4px;
+    }
+
+    label.field input[type="range"] {
+      padding: 0;
+      accent-color: var(--accent);
+    }
+
+    label.field input:focus,
+    label.field select:focus {
+      outline: 2px solid var(--accent2);
+    }
+
+    .fields-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .fields-grid.cols1 { grid-template-columns: 1fr; }
+    .fields-grid.cols3 { grid-template-columns: 1fr 1fr 1fr; }
+
+    /* ── Sponsor upload ── */
+    .sponsor-upload-box {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      position: relative;
+    }
+
+    .sponsor-upload-box:hover { border-color: var(--accent); }
+
+    .sponsor-upload-box input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .sponsor-upload-icon {
+      font-size: 40px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .sponsor-upload-box p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    #sponsorPreview {
+      display: none;
+      max-width: 100%;
+      max-height: 120px;
+      object-fit: contain;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin-top: 10px;
+    }
+
+    .team-logo-preview {
+      display: none;
+      max-width: 100%;
+      max-height: 108px;
+      object-fit: contain;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin-top: 10px;
+    }
+
+    /* ── Innings table ── */
+    .innings-table-wrap { overflow-x: auto; }
+
+    .innings-table {
+      display: grid;
+      gap: 5px;
+      min-width: 600px;
+    }
+
+    .innings-row {
+      display: grid;
+      grid-template-columns: 52px;
+      grid-auto-columns: 1fr;
+      grid-auto-flow: column;
+      gap: 5px;
+    }
+
+    .innings-row > .row-label {
+      display: grid;
+      place-items: center;
+      background: #252733;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .innings-row.head > .row-label { background: var(--bg); }
+
+    .it-cell {
+      display: grid;
+      grid-template-rows: 28px 36px 28px;
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      background: #252733;
+      overflow: hidden;
+    }
+
+    .it-cell button {
+      padding: 0;
+      font-size: 20px;
+      font-weight: 700;
+      border-radius: 0;
+      background: #1c1e26;
+      color: var(--text);
+    }
+    .it-cell button:hover { background: #2e3040; }
+
+    .it-cell span {
+      display: grid;
+      place-items: center;
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 600;
+      color: #fff;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── RHE controls ── */
+    .rhe-grid {
+      display: grid;
+      grid-template-columns: 60px 1fr 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .rhe-grid .rhe-label {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: center;
+    }
+
+    /* ── Bases ── */
+    .bases-diamond {
+      display: grid;
+      place-items: center;
+      padding: 8px;
+    }
+
+    .bases-layout {
+      display: grid;
+      grid-template-columns: repeat(3, 52px);
+      grid-template-rows: repeat(2, 52px);
+      gap: 4px;
+    }
+
+    .base-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 4px;
+      background: #252733;
+      border: 2px solid var(--border);
+      transform: rotate(45deg);
+      font-size: 0;
+      padding: 0;
+    }
+    .base-btn.active { background: var(--accent); border-color: var(--accent); }
+
+    /* ── Colors section ── */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 8px;
+    }
+
+    .color-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .custom-color {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .custom-color input[type="text"] {
+      flex: 1;
+      min-width: 0;
+      font-family: var(--mono);
+      font-size: 14px;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 6px 8px;
+    }
+    .color-swatch {
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .color-item .custom-color input[type="text"] {
+      width: 100%;
+    }
+
+    .font-btn-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .font-btn {
+      font-family: var(--font);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 9px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .font-btn:hover { background: var(--surface); border-color: var(--accent2); }
+    .font-btn.active { background: var(--accent); color: #111; border-color: var(--accent); }
+
+    /* ── Color picker popup ── */
+    #colorPickerPopup {
+      position: fixed; z-index: 9999;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+      display: none;
+      max-width: 260px;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+    #colorPickerPopup .cp-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 28px);
+      gap: 3px;
+      margin-bottom: 8px;
+    }
+    #colorPickerPopup .cp-grid button {
+      width: 28px; height: 28px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 3px;
+      padding: 0;
+      cursor: pointer;
+    }
+    #colorPickerPopup .cp-grid button:hover { border-color: #fff; transform: scale(1.15); }
+    #colorPickerPopup .cp-row {
+      display: flex; gap: 6px; align-items: center;
+    }
+    #colorPickerPopup .cp-row input {
+      flex: 1;
+      font-family: var(--mono);
+      font-size: 13px;
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 4px 6px;
+    }
+    #colorPickerPopup .cp-row button {
+      font-size: 13px; padding: 4px 10px;
+    }
+    #colorPickerPopup .cp-hue-bar {
+      height: 16px;
+      border-radius: 4px;
+      background: linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%);
+      border: 1px solid var(--border);
+      cursor: crosshair;
+      margin-bottom: 6px;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 12px 0;
+    }
+
+    .tag {
+      display: inline-block;
+      background: var(--accent);
+      color: #111;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      border-radius: 4px;
+      padding: 2px 7px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <!-- ══ TOPBAR ══════════════════════════════════════════════ -->
+    <header class="topbar">
+      <h1>⚾ PANEL DE CONTROL</h1>
+      <a href="index.html" target="_blank" rel="noopener">→ Abrir Pizarra (OBS)</a>
+    </header>
+
+    <div class="grid-main">
+
+      <!-- ══ SIDEBAR ════════════════════════════════════════════ -->
+      <aside class="sidebar">
+
+        <!-- Conteo B/S/O -->
+        <div class="section">
+          <div class="section-title">Conteo</div>
+
+          <div class="bso-grid">
+            <!-- Balls -->
+            <div class="bso-card">
+              <label>BOLAS</label>
+              <span class="bso-num" id="ballsVal">0</span>
+              <div class="bso-btns">
+                <button data-op="balls" data-delta="1">+1</button>
+                <button data-op="balls" data-delta="-1">−1</button>
+              </div>
+            </div>
+            <!-- Strikes -->
+            <div class="bso-card">
+              <label>STRIKES</label>
+              <span class="bso-num" id="strikesVal">0</span>
+              <div class="bso-btns">
+                <button data-op="strikes" data-delta="1">+1</button>
+                <button data-op="strikes" data-delta="-1">−1</button>
+              </div>
+            </div>
+            <!-- Outs -->
+            <div class="bso-card">
+              <label>OUTS</label>
+              <span class="bso-num" id="outsVal">0</span>
+              <div class="bso-btns">
+                <button data-op="outs" data-delta="1">+1</button>
+                <button data-op="outs" data-delta="-1">−1</button>
+              </div>
+            </div>
+          </div>
+
+          <button id="resetCount" class="accent" style="width:100%">↺ Reset Conteo</button>
+        </div>
+
+        <!-- Inning -->
+        <div class="section">
+          <div class="section-title">Entrada</div>
+          <div class="inning-strip">
+            <div>
+              <label style="font-size:11px;color:var(--muted);display:block;letter-spacing:1px">ENTRADA</label>
+              <div class="inning-num-display" id="inningVal">1</div>
+            </div>
+            <div style="display:grid;gap:5px;flex:1">
+              <button id="nextInning">▲ Siguiente</button>
+              <button id="prevInning">▼ Anterior</button>
+            </div>
+            <div>
+              <label style="font-size:11px;color:var(--muted);display:block;letter-spacing:1px">TURNO</label>
+              <div class="half-display" id="halfVal">ALTA</div>
+              <button id="toggleHalf" style="width:100%;margin-top:4px">CAMBIAR</button>
+            </div>
+          </div>
+          <button id="newHalfInning" class="accent2" style="width:100%">⏭ Siguiente Mitad</button>
+        </div>
+
+        <!-- Bases -->
+        <div class="section">
+          <div class="section-title">Bases</div>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <div class="btn-row">
+              <button class="base-toggle" data-base="1">1ª</button>
+              <button class="base-toggle" data-base="2">2ª</button>
+              <button class="base-toggle" data-base="3">3ª</button>
+            </div>
+            <button id="clearBases" class="danger">Limpiar</button>
+          </div>
+        </div>
+
+        <!-- Brillo & Visibilidad -->
+        <div class="section">
+          <div class="section-title">Brillo &amp; Visibilidad</div>
+          <label class="field">Visibilidad watermark<input type="range" id="markerOpacity" min="0" max="100" value="40" /></label>
+          <label class="field">Visibilidad nums header<input type="range" id="headerMarkerOpacity" min="0" max="100" value="100" /></label>
+          <label class="field">Tamaño nums header<input type="range" id="headerMarkerSize" min="20" max="200" value="70" /></label>
+          <label class="field">Brillo números pizarra<input type="range" id="digitBrightness" min="0" max="200" value="100" /></label>
+          <label class="field">Brillo texto general<input type="range" id="textBrightness" min="0" max="200" value="100" /></label>
+        </div>
+
+        <!-- Partido -->
+        <div class="section">
+          <div class="section-title">Partido</div>
+          <button id="newGame" class="danger" style="width:100%">⚠ Nuevo Juego</button>
+        </div>
+
+      </aside>
+
+      <!-- ══ MAIN CONTENT ═══════════════════════════════════════ -->
+      <div class="main-content">
+
+        <!-- ── Equipos ── -->
+        <div class="section">
+          <div class="section-title">Equipos</div>
+          <div class="fields-grid" style="grid-template-columns:1fr 1fr;">
+            <div>
+              <label class="field" style="margin-bottom:8px">
+                VISITANTE — NOMBRE
+                <input id="inputTeamA" type="text" value="RIELEROS" maxlength="16" placeholder="Ej. RIELEROS" />
+              </label>
+              <label class="field" style="margin-bottom:8px">
+                ESCUDO VISITANTE
+                <input id="logoAInput" type="file" accept="image/png,image/webp,image/jpeg,image/svg+xml" />
+              </label>
+              <img id="logoAPreview" class="team-logo-preview" alt="Vista previa escudo visitante" />
+              <button id="clearLogoA" class="danger" style="width:100%;margin-top:6px">✕ Quitar escudo</button>
+              <label class="field" style="margin-top:12px;">
+                Color recuadro visitante
+                <div class="custom-color"><input id="nameBoxColorA" type="text" value="#000000" maxlength="7" /><span class="color-swatch" style="background:#000000"></span></div>
+              </label>
+            </div>
+            <div>
+              <label class="field" style="margin-bottom:8px">
+                LOCAL — NOMBRE
+                <input id="inputTeamB" type="text" value="CALIENTE" maxlength="16" placeholder="Ej. CALIENTE" />
+              </label>
+              <label class="field" style="margin-bottom:8px">
+                ESCUDO LOCAL
+                <input id="logoBInput" type="file" accept="image/png,image/webp,image/jpeg,image/svg+xml" />
+              </label>
+              <img id="logoBPreview" class="team-logo-preview" alt="Vista previa escudo local" />
+              <button id="clearLogoB" class="danger" style="width:100%;margin-top:6px">✕ Quitar escudo</button>
+              <label class="field" style="margin-top:12px;">
+                Color recuadro local
+                <div class="custom-color"><input id="nameBoxColorB" type="text" value="#000000" maxlength="7" /><span class="color-swatch" style="background:#000000"></span></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Patrocinador ── -->
+        <div class="section">
+          <div class="section-title">Patrocinador <span class="tag">LOGO</span></div>
+          <div class="sponsor-upload-box" id="sponsorDropZone">
+            <input type="file" id="sponsorLogoInput" accept="image/png,image/webp,image/jpeg,image/svg+xml" />
+            <span class="sponsor-upload-icon">🖼️</span>
+            <p><strong>Haz clic o arrastra una imagen</strong></p>
+            <p>PNG, JPG, WebP o SVG · Se muestra en el área blanca de la pizarra</p>
+          </div>
+          <img id="sponsorPreview" alt="Vista previa patrocinador" />
+          <div style="margin-top:8px">
+            <button id="clearSponsor" class="danger" style="width:100%">✕ Quitar Patrocinador</button>
+          </div>
+        </div>
+
+        <!-- ── Carreras por Entrada ── -->
+        <div class="section">
+          <div class="section-title">Carreras por Entrada (+/−)</div>
+          <div class="innings-table-wrap">
+            <div id="inningsControls"></div>
+          </div>
+        </div>
+
+        <!-- ── H / E ── -->
+        <div class="section">
+          <div class="section-title">Hits / Errores (+/−)</div>
+          <div id="rheControls"></div>
+        </div>
+
+        <!-- ── Estilo Visual ── -->
+        <div class="section">
+          <div class="section-title">Estilo Visual</div>
+
+          <p style="font-size:13px;color:var(--muted);margin-bottom:10px">Colores del fondo, líneas y texto de la pizarra.</p>
+
+          <div class="color-grid">
+            <div class="color-item">Fondo principal<div class="custom-color"><input type="text" id="bg0" value="#000000" maxlength="7" /><span class="color-swatch" style="background:#000000"></span></div></div>
+            <div class="color-item">Fondo secundario<div class="custom-color"><input type="text" id="bg1" value="#000000" maxlength="7" /><span class="color-swatch" style="background:#000000"></span></div></div>
+            <div class="color-item">Fondo patrocinador<div class="custom-color"><input type="text" id="sponsorBgColor" value="#000000" maxlength="7" /><span class="color-swatch" style="background:#000000"></span></div></div>
+            <div class="color-item">Línea dorada<div class="custom-color"><input type="text" id="lineColor" value="#c0392b" maxlength="7" /><span class="color-swatch" style="background:#c0392b"></span></div></div>
+            <div class="color-item">Números pizarra<div class="custom-color"><input type="text" id="digitColor" value="#f4f4f6" maxlength="7" /><span class="color-swatch" style="background:#f4f4f6"></span></div></div>
+            <div class="color-item">Nombre equipo<div class="custom-color"><input type="text" id="teamNameColor" value="#ffffff" maxlength="7" /><span class="color-swatch" style="background:#ffffff"></span></div></div>
+            <div class="color-item">Color C/H/E<div class="custom-color"><input type="text" id="rheColor" value="#f4f4f6" maxlength="7" /><span class="color-swatch" style="background:#f4f4f6"></span></div></div>
+            <div class="color-item">Texto conteo (B/S/O)<div class="custom-color"><input type="text" id="countColor" value="#f4f7ff" maxlength="7" /><span class="color-swatch" style="background:#f4f7ff"></span></div></div>
+          </div>
+
+          <div class="divider"></div>
+
+          <label class="field" style="margin-bottom:10px">
+            FUENTE PRINCIPAL (texto)
+            <div class="font-btn-grid" id="fontSelect">
+              <button class="font-btn" data-value="Barlow Condensed">Barlow Condensed</button>
+              <button class="font-btn" data-value="Teko">Teko</button>
+              <button class="font-btn" data-value="Bebas Neue">Bebas Neue</button>
+              <button class="font-btn" data-value="Rajdhani">Rajdhani</button>
+              <button class="font-btn" data-value="Montserrat">Montserrat</button>
+              <button class="font-btn" data-value="Poppins">Poppins</button>
+              <button class="font-btn" data-value="Oswald">Oswald</button>
+              <button class="font-btn" data-value="Inter">Inter</button>
+              <button class="font-btn" data-value="Orbitron">Orbitron</button>
+              <button class="font-btn" data-value="Anton">Anton</button>
+              <button class="font-btn" data-value="Bangers">Bangers</button>
+              <button class="font-btn" data-value="Rubik">Rubik</button>
+              <button class="font-btn" data-value="Space Grotesk">Space Grotesk</button>
+              <button class="font-btn" data-value="Archivo Black">Archivo Black</button>
+            </div>
+          </label>
+
+          <label class="field" style="margin-bottom:10px">
+            FUENTE NÚMEROS
+            <div class="font-btn-grid" id="fontSelectNum">
+              <button class="font-btn" data-value="Quicksand">Quicksand</button>
+              <button class="font-btn" data-value="Barlow Condensed">Barlow Condensed</button>
+              <button class="font-btn" data-value="Teko">Teko</button>
+              <button class="font-btn" data-value="Bebas Neue">Bebas Neue</button>
+              <button class="font-btn" data-value="Rajdhani">Rajdhani</button>
+              <button class="font-btn" data-value="Montserrat">Montserrat</button>
+              <button class="font-btn" data-value="Poppins">Poppins</button>
+              <button class="font-btn" data-value="Oswald">Oswald</button>
+              <button class="font-btn" data-value="Inter">Inter</button>
+              <button class="font-btn" data-value="Orbitron">Orbitron</button>
+              <button class="font-btn" data-value="Anton">Anton</button>
+              <button class="font-btn" data-value="Bangers">Bangers</button>
+              <button class="font-btn" data-value="Rubik">Rubik</button>
+              <button class="font-btn" data-value="Space Grotesk">Space Grotesk</button>
+              <button class="font-btn" data-value="Archivo Black">Archivo Black</button>
+            </div>
+          </label>
+
+          <div class="divider"></div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:8px">Tamaños de texto (arrastra el deslizador):</p>
+
+          <div class="fields-grid">
+            <label class="field">Nombre equipo<input type="range" id="teamNameSize" min="60" max="300" value="140" /></label>
+            <label class="field">Números entrada<input type="range" id="inningSize"   min="80" max="420" value="200" /></label>
+            <label class="field">Números C/H/E<input type="range" id="rheSize"      min="80" max="420" value="220" /></label>
+            <label class="field">Labels B/S/O<input type="range" id="bsoLabelSize" min="28" max="200" value="72" /></label>
+            <label class="field">Valores B/S/O<input type="range" id="bsoValueSize" min="60" max="500" value="300" /></label>
+            <label class="field">Tamaño letras C/H/E<input type="range" id="cheLabelSize" min="28" max="180" value="90" /></label>
+          </div>
+
+          <div class="divider"></div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:8px">Ajustes extra:</p>
+
+          <div class="fields-grid cols3">
+            <label class="field">Grosor línea dorada<input type="range" id="lineThickness" min="1" max="24" value="6" /></label>
+            <label class="field">Zoom escudo equipo<input type="range" id="teamLogoScale" min="0.5" max="2.0" step="0.01" value="1" /></label>
+            <label class="field">Ancho columna equipos<input type="range" id="teamBoxWidth" min="700" max="2860" step="20" value="1500" /></label>
+            <label class="field">Escala logo horizontal<input type="range" id="sponsorScaleX" min="0.2" max="2" step="0.01" value="1" /></label>
+            <label class="field">Escala logo vertical<input type="range" id="sponsorScaleY" min="0.2" max="2" step="0.01" value="1" /></label>
+          </div>
+
+          <div class="divider"></div>
+          <p style="font-size:13px;color:var(--muted);margin-bottom:8px">Fila central C / H / E:</p>
+
+          <div class="fields-grid">
+            <label class="field">Tamaño letra C/H/E<input type="range" id="cheHeaderFontSize" min="28" max="300" value="90" /></label>
+            <label class="field">Alto de la fila (px)<input type="range" id="cheHeaderHeight" min="30" max="400" value="120" /></label>
+            <label class="field">Opacidad fondo C/H/E (%)<input type="range" id="cheHeaderBgOpacity" min="0" max="100" value="35" /></label>
+          </div>
+          <div class="color-grid" style="margin-top:10px">
+            <div class="color-item">Color texto C/H/E<div class="custom-color"><input type="text" id="cheHeaderColor" value="#d9d9d9" maxlength="7" /><span class="color-swatch" style="background:#d9d9d9"></span></div></div>
+            <div class="color-item">Fondo fila C/H/E<div class="custom-color"><input type="text" id="cheHeaderBg" value="#1a1a1a" maxlength="7" /><span class="color-swatch" style="background:#1a1a1a"></span></div></div>
+            <div class="color-item">Color nums header<div class="custom-color"><input type="text" id="headerMarkerColor" value="#ffffff" maxlength="7" /><span class="color-swatch" style="background:#ffffff"></span></div></div>
+          </div>
+
+          <!-- Inputs ocultos que el JS necesita (no aplican al nuevo layout pero se mantienen para compatibilidad) -->
+          <input type="hidden" id="diamondColor" value="#d93831" />
+          <input type="hidden" id="diamondTextColor" value="#ffea68" />
+          <input type="hidden" id="countBgColor" value="#020c1a" />
+          <input type="hidden" id="countBorderColor" value="#dbe1ea" />
+          <input type="hidden" id="logoColWidth" value="300" />
+          <input type="hidden" id="logoSize" value="320" />
+          <input type="hidden" id="inningGap" value="0" />
+          <input type="hidden" id="stripHeight" value="190" />
+          <input type="hidden" id="stripThickness" value="9" />
+          <input type="hidden" id="diamondSize" value="106" />
+          <input type="hidden" id="diamondFontSize" value="66" />
+          <input type="hidden" id="rheBlockWidth" value="620" />
+          <input type="hidden" id="hudWidth" value="1200" />
+        </div>
+
+      </div><!-- /main-content -->
+
+    </div><!-- /grid-main -->
+  </div><!-- /page -->
+
+  <button id="scrollTopBtn" style="
+    position: fixed; bottom: 24px; right: 24px; z-index: 999;
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--accent); color: #111; font-size: 22px;
+    border: none; cursor: pointer; box-shadow: 0 4px 14px rgba(0,0,0,0.5);
+    display: none; place-items: center; line-height: 1;
+  ">▲</button>
+
+  <!-- ══ Color picker popup ═════════════════════════════════ -->
+  <div id="colorPickerPopup">
+    <div class="cp-hue-bar" id="cpHueBar"></div>
+    <div class="cp-grid" id="cpGrid"></div>
+    <div class="cp-row">
+      <input type="text" id="cpHex" maxlength="7" placeholder="#000000" />
+      <button class="accent" id="cpApply">✓</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script type="module" src="sync.js"></script>
+
+  <script>
+    (function() {
+      // ── Scroll to top ──
+      const sBtn = document.getElementById('scrollTopBtn');
+      if (sBtn) {
+        const toggle = () => { sBtn.style.display = window.scrollY > 300 ? 'grid' : 'none'; };
+        window.addEventListener('scroll', toggle);
+        toggle();
+        sBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+      }
+
+      // ── Color picker popup ──
+      const popup = document.getElementById('colorPickerPopup');
+      const cpGrid = document.getElementById('cpGrid');
+      const cpHue = document.getElementById('cpHueBar');
+      const cpBright = document.getElementById('cpBrightBar');
+      const cpHex = document.getElementById('cpHex');
+      const cpApply = document.getElementById('cpApply');
+
+      if (!popup || !cpGrid) return;
+
+      // Preset palette (8 columns × several rows)
+      const PALETTE = [
+        '#000000','#111111','#222222','#333333','#444444','#666666','#888888','#aaaaaa',
+        '#cccccc','#dddddd','#eeeeee','#ffffff','#1a1a1a','#2e2e2e','#4a4a4a','#808080',
+        '#330000','#660000','#990000','#cc0000','#ff0000','#cc3333','#ff6666','#ff9999',
+        '#3b0d0d','#5c1a1a','#8b2a2a','#b33c3c','#e74c3c','#c0392b','#e67e22','#d35400',
+        '#331a00','#663300','#994400','#cc6600','#ff8800','#ffaa00','#f39c12','#f1c40f',
+        '#4a3000','#6b4400','#9e6600','#cc8800','#e6b800','#ffcc00','#ffee00','#ffff66',
+        '#1a3300','#336600','#4c9900','#66cc00','#80ff00','#33cc33','#66ff66','#99ff99',
+        '#003300','#006600','#009900','#00cc00','#00ff00','#27ae60','#2ecc71','#1abc9c',
+        '#003333','#006666','#009999','#00cccc','#33cccc','#66ffff','#16a085','#0e6655',
+        '#001a33','#003366','#004c99','#0066cc','#0080ff','#3399ff','#66b3ff','#99ccff',
+        '#000033','#000066','#000099','#0000cc','#0000ff','#3333cc','#6666ff','#9999ff',
+        '#0a0a2e','#1a1a4e','#2d2d6b','#4040a0','#2980b9','#3498db','#4f8ef7','#6c9fff',
+        '#1a0033','#330066','#4c0099','#6600cc','#8000ff','#9933ff','#b366ff','#cc99ff',
+        '#330033','#660066','#990099','#cc00cc','#ff00ff','#cc33cc','#ff66ff','#ff99ff',
+        '#2d0d2d','#4a1a4a','#6b2d6b','#8e44ad','#9b59b6','#a569bd','#bb8fce','#d2b4de',
+        '#1a0a00','#331a00','#4d2600','#663300','#804000','#996633','#b38060','#cc9966',
+        '#c0392b','#e74c3c','#e67e22','#f39c12','#f1c40f','#27ae60','#2ecc71','#1abc9c',
+        '#2980b9','#3498db','#8e44ad','#9b59b6','#34495e','#2c3e50','#95a5a6','#7f8c8d',
+      ];
+
+      let activeInput = null;
+      let activeSwatch = null;
+
+      // Build palette grid
+      PALETTE.forEach(c => {
+        const btn = document.createElement('button');
+        btn.style.background = c;
+        btn.dataset.color = c;
+        cpGrid.appendChild(btn);
+      });
+
+      function positionPopup(swatchEl) {
+        const r = swatchEl.getBoundingClientRect();
+        let top = r.bottom + 6;
+        let left = r.left;
+        if (left + 260 > window.innerWidth) left = window.innerWidth - 270;
+        if (top + 320 > window.innerHeight) top = r.top - 330;
+        popup.style.top = top + 'px';
+        popup.style.left = left + 'px';
+      }
+
+      function applyColor(hex) {
+        if (!activeInput || !activeSwatch) return;
+        if (!/^#[0-9a-f]{6}$/i.test(hex)) hex = '#000000';
+        activeInput.value = hex;
+        activeInput.dispatchEvent(new Event('input', { bubbles: true }));
+        activeSwatch.style.background = hex;
+        popup.style.display = 'none';
+        activeInput = null;
+        activeSwatch = null;
+      }
+
+      // Click color button
+      cpGrid.addEventListener('click', e => {
+        const btn = e.target.closest('button');
+        if (!btn || !btn.dataset.color) return;
+        applyColor(btn.dataset.color);
+      });
+
+      // Hue bar click
+      if (cpHue) {
+        cpHue.addEventListener('click', e => {
+          const r = cpHue.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width;
+          // Generate hue gradient and pick color
+          const ctx = document.createElement('canvas').getContext('2d');
+          ctx.width = 1; ctx.height = 1;
+          ctx.fillStyle = `hsl(${Math.round(x * 360)}, 100%, 50%)`;
+          ctx.fillRect(0, 0, 1, 1);
+          const d = ctx.getImageData(0, 0, 1, 1).data;
+          const hex = '#' + [d[0],d[1],d[2]].map(v => v.toString(16).padStart(2,'0')).join('');
+          if (activeInput) {
+            activeInput.value = hex;
+            if (activeSwatch) activeSwatch.style.background = hex;
+            cpHex.value = hex;
+          }
+        });
+      }
+
+      // Apply button
+      if (cpApply) cpApply.onclick = () => applyColor(cpHex.value);
+
+      // Hex input enter
+      if (cpHex) cpHex.onkeydown = e => { if (e.key === 'Enter') applyColor(cpHex.value); };
+
+      // Open popup on swatch click
+      document.addEventListener('click', e => {
+        const swatch = e.target.closest('.color-swatch');
+        if (swatch) {
+          e.preventDefault();
+          const parent = swatch.closest('.custom-color');
+          if (!parent) return;
+          activeInput = parent.querySelector('input[type="text"]');
+          activeSwatch = swatch;
+          const cur = activeInput ? activeInput.value : '#000000';
+          cpHex.value = cur;
+          positionPopup(swatch);
+          popup.style.display = 'block';
+          return;
+        }
+        // Close on click outside
+        if (!e.target.closest('#colorPickerPopup')) {
+          popup.style.display = 'none';
+          activeInput = null;
+          activeSwatch = null;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
+
+<!-- Firmado por Alan Flores para Estadio Mineros de Parral  al dia 19-05-2026 a las 12:16 P.M. -->

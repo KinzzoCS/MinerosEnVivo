@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="es-MX">
 <head>
   <meta charset="utf-8">
   <!-- Google Tag Manager -->
@@ -19,7 +19,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     gtag('config', 'G-SMTB1B38FQ');
   </script>
   <!-- End Google tag -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Mineros TV | Béisbol en vivo, Mineros de Parral, Estatal Chihuahua 2026</title>
   <meta name="description" content="Mineros TV: transmisiones en vivo de béisbol, Mineros de Parral, Estatal de Chihuahua 2026. Noticias, roster, resultados y comunidad del béisbol en Parral, Chihuahua.">
   <meta name="keywords" content="Mineros de Parral, béisbol en vivo, Estatal Chihuahua 2026, béisbol Parral, transmisión béisbol, liga estatal Chihuahua, mineros tv, béisbol chihuahua">
@@ -31,109 +31,127 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta property="og:url" content="https://minerostv.com.mx/">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_MX">
+  <meta property="og:image" content="https://minerostv.com.mx/assets/icons/icon-512.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Mineros TV | Béisbol en vivo">
-  <meta name="twitter:description" content="Transmisiones en vivo de Mineros de Parral, Estatal de Chihuahua 2026.">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
-  <link rel="shortcut icon" href="/favicon.ico">
+  <meta name="twitter:description" content="Transmisiones en vivo de Mineros de Parral, Estatal de Chihuahua 2026. Noticias, roster, resultados y comunidad.">
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#19191B" media="(prefers-color-scheme: dark)">
+  <script>try{var p=JSON.parse(localStorage.getItem("mineros_prefs")||"{}");if(p.theme==="light"||p.theme==="dark")document.documentElement.dataset.theme=p.theme;if(p.text==="grande"||p.text==="enorme")document.documentElement.dataset.text=p.text;}catch(e){}</script>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Mineros TV">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="apple-touch-icon" href="/favicon.ico">
-  <meta name="theme-color" content="#0b1220">
-  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <link rel="icon" href="/assets/img/favicon-32x32.svg" sizes="32x32" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.svg">
+  <link rel="icon" href="/assets/icons/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Big+Shoulders+Display:wght@600;800;900&family=Big+Shoulders+Stencil+Display:wght@800&display=swap">
+  <link rel="stylesheet" href="assets/css/main.css?v=20261019">
 </head>
 <body>
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MXJP6XNH"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
-  <header class="site-header">
-    <a class="brand" href="index.html"><span class="brand-mark">MTV</span><span>Mineros TV</span></a>
-    <nav class="top-nav">
-      <a href="#partidos">Partidos</a>
-      <a href="#noticias">Noticias</a>
-      <a href="roster.html">Roster</a>
-    </nav>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <header class="app-header">
+    <div class="app-header-inner">
+      <a class="marca" href="index.html"><img src="assets/icons/escudo.png" alt="" width="58" height="41">Mineros<span>TV</span></a>
+      <nav class="nav-escritorio" aria-label="Secciones">
+        <a href="index.html" aria-current="page">En vivo</a>
+        <a href="calendario.html">Calendario</a>
+        <a href="roster.html">Equipo</a>
+        <a href="noticias.html">Noticias</a>
+      </nav>
+      <button class="boton-ajustes" type="button" data-abrir-ajustes aria-label="Ajustes de letra y color">Aa</button>
+    </div>
   </header>
-
-  <main>
-    <section class="hero-shell">
-      <div class="broadcast-panel">
-        <div class="stream-selector">
-          <span>Transmisión</span>
-          <div class="stream-pills">
-            <button type="button" class="stream-pill active" data-stream-option="1">Mineros TV</button>
-            <button type="button" class="stream-pill" data-stream-option="2">La Poderosa De Parral</button>
+  <main class="pagina" id="contenido">
+    <div class="envivo-grid">
+      <section class="transmision" aria-labelledby="liveTitle">
+        <div id="sinJuego" hidden></div>
+        <div class="selector" role="group" aria-label="Elige la transmisión">
+          <button type="button" data-stream-option="1" aria-pressed="true">Mineros TV</button>
+          <button type="button" data-stream-option="2" aria-pressed="false">La Poderosa De Parral</button>
+        </div>
+        <div class="video cargando" id="playerFrame">
+          <iframe id="streamFrame" title="Transmisión en vivo de Mineros TV" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+        </div>
+        <div class="estado">
+          <div class="estado-fila">
+            <span class="pastilla pastilla-espera" id="liveStatus">Cargando</span>
+            <span class="espectadores" id="viewers" hidden><strong id="viewersCount">0</strong> viendo ahora</span>
           </div>
+          <h1 id="liveTitle">Mineros TV en vivo</h1>
         </div>
-        <div class="section-kicker">
-          <div class="live-status"><span class="live-dot"></span><span id="liveStatusLabel">Cargando directo</span></div>
-          <span class="viewers-count"><strong id="viewersCount">0</strong> espectadores</span>
-        </div>
-        <h1 id="liveTitle">Mineros TV en vivo</h1>
-        <div class="player-frame skeleton" id="playerFrame">
-          <iframe id="streamFrame" title="Transmision en vivo de Mineros TV" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
-        </div>
-      </div>
+        <div id="liveScore" aria-live="polite" hidden></div>
+      </section>
 
-      <aside class="chat-panel">
-        <div class="chat-head">
-          <div>
-            <p class="section-kicker">Comunidad</p>
-            <h2>Chat en vivo</h2>
-          </div>
-          <button class="icon-button" id="renameBtn" title="Cambiar nombre">Editar</button>
+      <aside class="chat tarjeta" aria-labelledby="chatTitle">
+        <div class="chat-cabeza">
+          <h2 id="chatTitle">Chat en vivo</h2>
+          <p class="chat-identidad">Comentas como <strong id="displayName">Minero</strong> <button class="boton-texto" id="renameBtn" type="button">Cambiar</button></p>
         </div>
-        <p class="identity-line">Publicas como <strong id="displayName">Minero</strong></p>
-        <div class="chat-feed" id="chatFeed" aria-live="polite"></div>
-        <form class="chat-form" id="chatForm">
-          <input id="chatInput" maxlength="180" autocomplete="off" placeholder="Escribe un mensaje">
-          <button type="submit">Enviar</button>
-        </form>
-        <p class="form-note" id="chatNote">Sin registro. Respeta a la comunidad minera.</p>
+        <div class="chat-feed" id="chatFeed" aria-live="polite">
+          <p class="chat-vacio">Todavía no hay mensajes. Escribe el primero.</p>
+        </div>
+        <div class="chat-pie">
+          <form class="chat-form" id="chatForm">
+            <label class="solo-lector" for="chatInput">Mensaje</label>
+            <input id="chatInput" maxlength="180" autocomplete="off" enterkeyhint="send" placeholder="Escribe un mensaje">
+            <button type="submit" aria-label="Enviar mensaje"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12.6 2-12.6 2z"/></svg></button>
+          </form>
+          <p class="chat-nota" id="chatNote">Sin registro. Respeta a la comunidad minera.</p>
+        </div>
       </aside>
+    </div>
+
+    <section class="seccion" aria-labelledby="t-resultado">
+      <div class="seccion-cabeza"><h2 id="t-resultado">Último resultado</h2><a href="calendario.html#resultados">Ver resultados</a></div>
+      <div id="lastResult"></div>
     </section>
 
-    <section class="content-band" id="partidos">
-      <div class="section-title">
-        <p class="section-kicker">Calendario</p>
-        <h2>Proximos partidos</h2>
-      </div>
-      <div class="sports-grid" id="matchesGrid"></div>
+    <section class="seccion" aria-labelledby="t-proximos">
+      <div class="seccion-cabeza"><h2 id="t-proximos">Próximos juegos</h2><a href="calendario.html">Ver calendario</a></div>
+      <div class="juegos" id="matchesGrid"></div>
     </section>
 
-    <section class="content-band">
-      <div class="section-title">
-        <p class="section-kicker">Marcador</p>
-        <h2>Ultimos resultados</h2>
-      </div>
-      <div class="results-list" id="resultsList"></div>
-    </section>
-
-    <section class="content-band" id="noticias">
-      <div class="section-title">
-        <p class="section-kicker">Actualidad</p>
-        <h2>Noticias destacadas</h2>
-      </div>
-      <div class="news-grid" id="newsGrid"></div>
+    <section class="seccion" aria-labelledby="t-noticias">
+      <div class="seccion-cabeza"><h2 id="t-noticias">Noticias</h2><a href="noticias.html">Ver todas</a></div>
+      <div class="noticias" id="newsGrid"></div>
     </section>
   </main>
-
-  <footer class="site-footer">
-    <div class="footer-content">
-      <p>&copy; 2026 Mineros TV. Todos los derechos reservados.</p>
-      <div class="footer-credit">
+  <footer class="pie">
+    <div class="pie-inner">
+      <p>&copy; 2026 Mineros TV. Béisbol de Mineros de Parral.</p>
+      <a class="credito" href="https://nexpa.mx" target="_blank" rel="noopener">
         <span>Desarrollado por</span>
-        <a href="https://nexpa.mx" target="_blank" rel="noopener">
-          <img src="./assets/img/nexpa logo.jpeg" alt="Nexpa">
-        </a>
-      </div>
+        <img src="assets/img/nexpa%20logo.jpeg" alt="Nexpa" width="64" height="28">
+      </a>
     </div>
   </footer>
-
-  <script type="module" src="assets/js/app.js"></script>
+  <nav class="tabs" aria-label="Secciones">
+    <a class="tab" href="index.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>En vivo</span></a>
+    <a class="tab" href="calendario.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span>Calendario</span></a>
+    <a class="tab" href="roster.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.4 0 4 1.5 4.5 4"/></svg><span>Equipo</span></a>
+    <a class="tab" href="noticias.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h10M7 17h6"/></svg><span>Noticias</span></a>
+  </nav>
+  <dialog class="hoja" id="nameDialog" aria-labelledby="nameTitle">
+    <form method="dialog" class="hoja-cuerpo" id="nameForm">
+      <div class="hoja-cabeza">
+        <h2 id="nameTitle">Tu nombre en el chat</h2>
+        <button class="cerrar" value="cancelar" formnovalidate aria-label="Cerrar">×</button>
+      </div>
+      <label class="campo" for="nameInput">Nombre
+        <input id="nameInput" maxlength="26" minlength="3" required autocomplete="nickname">
+      </label>
+      <button class="boton boton-rojo boton-ancho" value="guardar">Guardar nombre</button>
+    </form>
+  </dialog>
+  <script type="module" src="assets/js/shell.js?v=20261019"></script>
+  <script type="module" src="assets/js/app.js?v=20261019"></script>
 </body>
 </html>

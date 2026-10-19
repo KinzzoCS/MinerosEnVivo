@@ -1,0 +1,25 @@
+{
+  "id": "/",
+  "name": "Mineros TV",
+  "short_name": "Mineros TV",
+  "description": "Juegos en vivo, calendario, resultados y noticias de Mineros de Parral.",
+  "lang": "es-MX",
+  "dir": "ltr",
+  "start_url": "/?origen=app",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "categories": ["sports", "entertainment"],
+  "icons": [
+    { "src": "/assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Calendario", "short_name": "Calendario", "url": "/calendario.html", "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Equipo", "short_name": "Equipo", "url": "/roster.html", "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Noticias", "short_name": "Noticias", "url": "/noticias.html", "icons": [{ "src": "/assets/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

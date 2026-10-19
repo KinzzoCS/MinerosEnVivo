@@ -77,11 +77,23 @@ El UID lo obtienes desde Firebase Authentication despues de crear el usuario adm
 - `news`: noticias con titulo, resumen, contenido, URL de imagen y destacada.
 - `players`: jugadores, posicion, numero, biografia y URL de foto.
 - `matches`: proximos partidos.
-- `results`: resultados recientes.
+- `results`: resultados. Opcionalmente con carreras por entrada (`awayInnings`, `homeInnings`), hits y errores; los que guarda la pizarra traen `source: "pizarra"`.
+- `liveGame/actual`: marcador en vivo que publica la pizarra del estadio (`status`: `en_vivo`, `inactivo` o `final`; entrada, conteo y bases).
 - `chatMessages`: mensajes de comunidad.
 - `bannedWords`: palabras prohibidas para validacion basica.
 - `mutedUsers`: usuarios temporales silenciados.
 - `admins`: lista de UIDs autorizados.
+
+## Pizarra del estadio
+
+La carpeta `pizarra/` es la pizarra de la pantalla grande del estadio:
+
+- `pizarra/index.html`: la pantalla de 8000×1500 (para OBS o la pantalla del estadio). No pide inicio de sesión.
+- `pizarra/control.html`: el panel de control. Solo entra un usuario administrador.
+
+El control y la pantalla se sincronizan dentro de la misma computadora (por `localStorage`), aunque falle internet. Con el interruptor "Mostrar en la app", el control publica el juego en `liveGame/actual` y la pestaña En vivo lo muestra en tiempo real. "Finalizar juego y guardar resultado" lo guarda en `results` con la línea completa.
+
+Cada cambio publicado cuenta una lectura por cada persona con la app abierta. El control agrupa los cambios en una escritura cada 3 segundos como máximo, y la app solo escucha mientras está visible.
 
 ## Desarrollo local
 

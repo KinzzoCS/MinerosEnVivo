@@ -8,17 +8,40 @@ export const demoSettings = {
   liveTitle2: "Segundo stream - Comentarios alternativos"
 };
 
+// Fechas relativas a hoy para que el modo demo siempre tenga juegos próximos y resultados recientes.
+function daysFromToday(days) {
+  const date = new Date();
+  date.setDate(date.getDate() + days);
+  const pad = n => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
 export const demoMatches = [
-  { rival: "Dorados", date: "2026-06-12", time: "19:30", stadium: "Estadio Minero", tournament: "Liga Regional" },
-  { rival: "Algodoneros", date: "2026-06-15", time: "20:00", stadium: "Parque Norte", tournament: "Temporada 2026" },
-  { rival: "Indios", date: "2026-06-19", time: "18:45", stadium: "Estadio Minero", tournament: "Temporada 2026" }
+  { rival: "Dorados", date: daysFromToday(2), time: "19:30", stadium: "Estadio Minero", tournament: "Estatal Chihuahua 2026" },
+  { rival: "Algodoneros", date: daysFromToday(6), time: "20:00", stadium: "Parque Norte", tournament: "Estatal Chihuahua 2026", minerIsAway: true },
+  { rival: "Indios", date: daysFromToday(9), time: "18:45", stadium: "Estadio Minero", tournament: "Estatal Chihuahua 2026" }
 ];
 
 export const demoResults = [
-  { home: "Mineros", away: "Dorados", homeScore: 7, awayScore: 4, date: "2026-06-01" },
-  { home: "Mineros", away: "Algodoneros", homeScore: 3, awayScore: 2, date: "2026-05-28" },
-  { home: "Indios", away: "Mineros", homeScore: 5, awayScore: 6, date: "2026-05-24" }
+  {
+    home: "Mineros", away: "Dorados", homeScore: 7, awayScore: 4, date: daysFromToday(-3),
+    awayInnings: [0, 1, 0, 0, 2, 0, 1, 0, 0], homeInnings: [2, 0, 0, 3, 0, 1, 0, 1],
+    awayHits: 8, homeHits: 11, awayErrors: 2, homeErrors: 0
+  },
+  { home: "Mineros", away: "Algodoneros", homeScore: 3, awayScore: 2, date: daysFromToday(-7) },
+  { home: "Indios", away: "Mineros", homeScore: 5, awayScore: 6, date: daysFromToday(-10) }
 ];
+
+// Juego en vivo de ejemplo, con la misma forma que publica la pizarra en liveGame/actual.
+export const demoLiveGame = {
+  status: "en_vivo",
+  away: "Dorados", home: "Mineros",
+  awayInnings: [0, 1, 0, 0, 1, 0], homeInnings: [2, 0, 0, 2, 0],
+  awayScore: 2, homeScore: 4,
+  awayHits: 6, homeHits: 7, awayErrors: 1, homeErrors: 0,
+  inning: 6, half: "alta", balls: 2, strikes: 1, outs: 2,
+  bases: [true, false, true]
+};
 
 export const demoNews = [
   {

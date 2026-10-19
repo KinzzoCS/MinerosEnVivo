@@ -43,6 +43,14 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // Marcador en vivo publicado desde la pizarra del estadio (pizarra/control.html)
+    match /liveGame/{docId} {
+      allow read: if true;
+      allow write: if isAdmin() &&
+        docId == "actual" &&
+        request.resource.data.status in ["en_vivo", "inactivo", "final"];
+    }
+
     match /viewers/{viewerId} {
       allow read: if true;
       allow create, update: if

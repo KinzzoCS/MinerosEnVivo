@@ -14,7 +14,15 @@ export async function getFirebase() {
   const authMod = await import("https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js");
 
   app = appMod.initializeApp(firebaseConfig);
-  db = firestore.getFirestore(app);
+  try {
+    // Caché local: la app muestra el último calendario, resultados y noticias aunque no haya señal
+    db = firestore.initializeFirestore(app, {
+      localCache: firestore.persistentLocalCache({ tabManager: firestore.persistentMultipleTabManager() })
+    });
+  } catch (error) {
+    console.warn("Caché sin conexión no disponible:", error);
+    db = firestore.getFirestore(app);
+  }
   auth = authMod.getAuth(app);
   firebaseModules = { app, db, auth, firestore, authMod };
   return firebaseModules;
