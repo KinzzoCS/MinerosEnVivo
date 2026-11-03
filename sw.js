@@ -2,12 +2,13 @@
 // Estrategia: siempre se intenta la red primero (así cada deploy se ve de inmediato)
 // y la copia guardada solo se usa cuando no hay conexión.
 // Cambia CACHE_VERSION si cambias la lista de archivos base.
-const CACHE_VERSION = "mineros-v2";
+const CACHE_VERSION = "mineros-v7";
 const FONT_CACHE = "mineros-fuentes-v1";
 
 const APP_SHELL = [
   "/",
   "/index.html",
+  "/envivo.html",
   "/calendario.html",
   "/roster.html",
   "/noticias.html",
@@ -17,14 +18,20 @@ const APP_SHELL = [
   "/assets/css/main.css",
   "/assets/js/app.js",
   "/assets/js/calendar.js",
+  "/assets/js/chat.js",
   "/assets/js/components.js",
   "/assets/js/demo-data.js",
   "/assets/js/firebase-config.js",
   "/assets/js/firebase-service.js",
+  "/assets/js/home.js",
+  "/assets/js/inicio.js",
   "/assets/js/news-list.js",
   "/assets/js/news-page.js",
   "/assets/js/roster.js",
+  "/assets/js/seasons.js",
   "/assets/js/shell.js",
+  "/assets/js/sports.js",
+  "/assets/js/streams.js",
   "/assets/js/utils.js",
   "/assets/icons/escudo.png",
   "/assets/icons/icon-192.png",
@@ -70,7 +77,12 @@ self.addEventListener("fetch", event => {
 async function networkFirst(request) {
   const cache = await caches.open(CACHE_VERSION);
   try {
-    const response = await fetch(request);
+    // "no-cache" pregunta siempre al servidor (responde 304 si no cambió). Sin esto, tras un deploy
+    // el navegador podría mezclar módulos JS nuevos con viejos y romper la página.
+    const fresh = request.mode === "navigate"
+      ? new Request(request.url, { cache: "no-cache", credentials: "same-origin" })
+      : new Request(request, { cache: "no-cache" });
+    const response = await fetch(fresh);
     if (response.ok) cache.put(stripVersion(request), response.clone());
     return response;
   } catch (error) {

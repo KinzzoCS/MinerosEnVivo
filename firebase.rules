@@ -13,6 +13,27 @@ service cloud.firestore {
       return value is string && value.size() >= min && value.size() <= max;
     }
 
+    // Deportes de la app (spec 001). Un documento sin deporte se lee como béisbol.
+    function validSports(data) {
+      return (!('sport' in data) || data.sport in ['beisbol', 'basquetbol']) &&
+        (!('sports' in data) || (data.sports is list && data.sports.size() > 0 && data.sports.hasOnly(['beisbol', 'basquetbol'])));
+    }
+
+    function adminWritesSportDoc() {
+      return isAdmin() && validSports(request.resource.data);
+    }
+
+    // Chat (spec 006): un usuario silenciado no escribe hasta que pase su silencio
+    function notMuted(userId) {
+      return !exists(/databases/$(database)/documents/mutedUsers/$(userId)) ||
+        get(/databases/$(database)/documents/mutedUsers/$(userId)).data.get("mutedUntil", 0) < request.time.toMillis();
+    }
+
+    // Juegos y resultados pueden ligarse a una temporada (spec 003)
+    function validSeasonRef(data) {
+      return !('seasonId' in data) || cleanString(data.seasonId, 1, 80);
+    }
+
     match /admins/{uid} {
       allow read: if signedIn() && request.auth.uid == uid;
       allow write: if false;
@@ -25,22 +46,55 @@ service cloud.firestore {
 
     match /news/{docId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, update: if adminWritesSportDoc();
+      allow delete: if isAdmin();
     }
 
     match /players/{docId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, update: if adminWritesSportDoc();
+      allow delete: if isAdmin();
     }
 
     match /matches/{docId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, update: if adminWritesSportDoc() && validSeasonRef(request.resource.data);
+      allow delete: if isAdmin();
     }
 
     match /results/{docId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow create, update: if adminWritesSportDoc() && validSeasonRef(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    // Campeonatos y sus temporadas (spec 003)
+    match /championships/{docId} {
+      allow read: if true;
+      allow create, update: if adminWritesSportDoc() &&
+        'sport' in request.resource.data &&
+        cleanString(request.resource.data.name, 1, 80);
+      allow delete: if isAdmin();
+    }
+
+    match /seasons/{docId} {
+      allow read: if true;
+      allow create, update: if adminWritesSportDoc() &&
+        'sport' in request.resource.data &&
+        cleanString(request.resource.data.name, 1, 40) &&
+        cleanString(request.resource.data.championshipId, 1, 80);
+      allow delete: if isAdmin();
+    }
+
+    // Medios de transmisión (spec 004). El id es el streamId del chat y de los espectadores.
+    match /streams/{docId} {
+      allow read: if true;
+      allow create, update: if adminWritesSportDoc() &&
+        cleanString(request.resource.data.name, 1, 60) &&
+        request.resource.data.url is string && request.resource.data.url.size() <= 400 &&
+        request.resource.data.live is bool &&
+        request.resource.data.order is int;
+      allow delete: if isAdmin();
     }
 
     // Marcador en vivo publicado desde la pizarra del estadio (pizarra/control.html)
@@ -48,7 +102,8 @@ service cloud.firestore {
       allow read: if true;
       allow write: if isAdmin() &&
         docId == "actual" &&
-        request.resource.data.status in ["en_vivo", "inactivo", "final"];
+        request.resource.data.status in ["en_vivo", "inactivo", "final"] &&
+        validSports(request.resource.data);
     }
 
     match /viewers/{viewerId} {
@@ -56,7 +111,9 @@ service cloud.firestore {
       allow create, update: if
         cleanString(request.resource.data.streamId, 1, 80) &&
         cleanString(request.resource.data.displayName, 1, 60) &&
-        request.resource.data.keys().hasOnly(["streamId", "displayName", "lastSeen"]);
+        request.resource.data.keys().hasOnly(["streamId", "displayName", "lastSeen"]) &&
+        request.resource.data.lastSeen is timestamp &&
+        request.resource.data.lastSeen < request.time + duration.value(2, "m");
       allow delete: if true;
     }
 
@@ -78,7 +135,9 @@ service cloud.firestore {
         cleanString(request.resource.data.message, 1, 180) &&
         cleanString(request.resource.data.streamId, 1, 80) &&
         request.resource.data.status == "visible" &&
-        request.resource.data.keys().hasOnly(["userId", "displayName", "message", "streamId", "status", "createdAt"]);
+        request.resource.data.keys().hasOnly(["userId", "displayName", "message", "streamId", "status", "createdAt"]) &&
+        request.resource.data.createdAt == request.time &&
+        notMuted(request.resource.data.userId);
       allow update, delete: if isAdmin();
     }
   }

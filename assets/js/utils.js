@@ -26,6 +26,16 @@ export function safeImageUrl(url, fallback) {
   return fallback;
 }
 
+// Enlaces externos (redes sociales): solo https, sin comillas que rompan el atributo.
+export function safeLinkUrl(url) {
+  try {
+    const parsed = new URL(String(url || "").trim());
+    return parsed.protocol === "https:" ? parsed.href.replace(/["'`<>]/g, encodeURIComponent) : "";
+  } catch {
+    return "";
+  }
+}
+
 // Las fechas del calendario se capturan en hora de Parral (Chihuahua, UTC-6 sin horario de verano).
 const PARRAL_OFFSET = "-06:00";
 

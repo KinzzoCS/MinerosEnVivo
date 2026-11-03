@@ -7,3 +7,9 @@ __pycache__/
 
 # Firebase cache
 .firebase/
+
+# Emuladores locales de Firebase
+.emulador/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log

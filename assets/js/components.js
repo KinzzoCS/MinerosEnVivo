@@ -1,11 +1,15 @@
 // Piezas de interfaz compartidas por las páginas públicas.
 import { formatDate, formatTime, matchStart, safeImageUrl, sanitizeAttr, sanitizeText, teamAbbr } from "./utils.js";
+import { sportOf, sportTagHtml } from "./sports.js";
+import { seasonBadgeHtml } from "./seasons.js";
+import { socialBlockHtml, socialLinks } from "./streams.js";
 
 const TEAM = "Mineros";
 
 // Marcador pintado. Si el resultado trae carreras por entrada, muestra la línea completa (C, H, E).
 // Con `situation` (juego en vivo) agrega entrada, conteo y bases.
-export function scoreboardHtml(result, { label = "Final", situation = null } = {}) {
+export function scoreboardHtml(result, { label = "Final", situation = null, showSport = false } = {}) {
+  if (!situation && sportOf(result) === "basquetbol") return basketballScoreboardHtml(result, { label, showSport });
   const away = sanitizeText(result.away, 32) || "Visitante";
   const home = sanitizeText(result.home, 32) || "Local";
   const awayRuns = Number(result.awayScore || 0);
@@ -59,7 +63,49 @@ export function scoreboardHtml(result, { label = "Final", situation = null } = {
           </tbody>
         </table>
       </div>
-      <div class="marcador-pie"><span>${sanitizeText(label, 30)}</span><span>${away} en casa de ${home}</span><span>${formatDate(result.date)}</span></div>
+      ${scoreFooterHtml(result, label, away, home, showSport)}
+    </article>`;
+}
+
+function scoreFooterHtml(result, label, away, home, showSport) {
+  return `<div class="marcador-pie"><span>${sanitizeText(label, 30)}${showSport ? ` ${sportTagHtml(sportOf(result))}` : ""}</span><span>${away} en casa de ${home}</span><span>${formatDate(result.date)}</span></div>`;
+}
+
+// Básquetbol: puntos por cuarto (del 5.º en adelante, tiempos extra) y total.
+function basketballScoreboardHtml(result, { label, showSport }) {
+  const away = sanitizeText(result.away, 32) || "Visitante";
+  const home = sanitizeText(result.home, 32) || "Local";
+  const awayTotal = Number(result.awayScore || 0);
+  const homeTotal = Number(result.homeScore || 0);
+  const toPeriods = list => (Array.isArray(list) ? list.map(v => (v === null || v === undefined || v === "" ? null : Number(v))) : []);
+  const awayPeriods = toPeriods(result.awayPeriods);
+  const homePeriods = toPeriods(result.homePeriods);
+  const played = Math.max(awayPeriods.length, homePeriods.length);
+  const columns = played > 0 ? Math.max(4, played) : 0;
+  const extras = Math.max(0, columns - 4);
+  const periodLabel = i => (i < 4 ? String(i + 1) : extras === 1 ? "TE" : `TE${i - 3}`);
+  const head = Array.from({ length: columns }, (_, i) =>
+    `<th scope="col"${i >= 4 ? ' title="Tiempo extra"' : ` title="Cuarto ${i + 1}"`}>${periodLabel(i)}</th>`).join("");
+  const cells = list => Array.from({ length: columns }, (_, i) =>
+    Number.isFinite(list[i]) ? `<td>${list[i]}</td>` : `<td class="vacio">-</td>`).join("");
+  const row = (name, total, list, winner) => `
+    <tr class="${winner ? "ganador" : ""}">
+      <th scope="row" class="equipo">${columns ? `<abbr title="${sanitizeAttr(name)}">${teamAbbr(name)}</abbr>` : name}</th>
+      ${cells(list)}
+      <td class="total carreras">${total}</td>
+    </tr>`;
+  return `
+    <article class="marcador marcador-basquet" aria-label="${sanitizeAttr(`${away} ${awayTotal}, ${home} ${homeTotal}`)}">
+      <div class="marcador-tabla">
+        <table>
+          <thead><tr><th scope="col"><span class="solo-lector">Equipo</span></th>${head}<th scope="col" title="Total">T</th></tr></thead>
+          <tbody>
+            ${row(away, awayTotal, awayPeriods, awayTotal > homeTotal)}
+            ${row(home, homeTotal, homePeriods, homeTotal > awayTotal)}
+          </tbody>
+        </table>
+      </div>
+      ${scoreFooterHtml(result, label, away, home, showSport)}
     </article>`;
 }
 
@@ -101,12 +147,15 @@ export function isLiveGame(game, now = new Date()) {
   return !updated || now - updated < 6 * 60 * 60 * 1000;
 }
 
-export function matchTitle(match) {
+export function matchTitle(match, config = null) {
   const rival = sanitizeText(match.rival, 42) || "Rival por definir";
-  return match.minerIsAway ? `${TEAM} en casa de ${rival}` : `${TEAM} vs ${rival}`;
+  const team = config?.[sportOf(match)]?.equipo || TEAM;
+  return match.minerIsAway ? `${team} en casa de ${rival}` : `${team} vs ${rival}`;
 }
 
-export function matchHtml(match) {
+export function matchHtml(match, options = {}) {
+  const { config = null, showSport = false, seasons = null } = typeof options === "object" && options ? options : {};
+  const season = match.seasonId && seasons ? seasons.get(match.seasonId) : null;
   const start = matchStart(match);
   const weekday = start ? new Intl.DateTimeFormat("es-MX", { weekday: "short", timeZone: "America/Chihuahua" }).format(start).replace(".", "") : "";
   const day = start ? new Intl.DateTimeFormat("es-MX", { day: "numeric", timeZone: "America/Chihuahua" }).format(start) : "?";
@@ -117,10 +166,11 @@ export function matchHtml(match) {
     <article class="juego tarjeta">
       <div class="fecha-bloque" aria-hidden="true"><span class="dia-semana">${weekday}</span><strong>${day}</strong><span class="mes">${month}</span></div>
       <div class="juego-info">
-        <span class="juego-rival">${matchTitle(match)}</span>
+        <span class="juego-rival">${matchTitle(match, config)}</span>
         <span class="juego-detalle">${formatDate(match.date, { dateStyle: "full" })}, ${formatTime(match.time)}</span>
-        <span class="juego-detalle">${stadium}${tournament ? `. ${tournament}` : ""}</span>
-        <span class="etiqueta ${match.minerIsAway ? "" : "etiqueta-local"}">${match.minerIsAway ? "Visitante" : "Local"}</span>
+        <span class="juego-detalle">${stadium}${!season && tournament ? `. ${tournament}` : ""}</span>
+        ${season ? seasonBadgeHtml(season) : ""}
+        <span class="juego-etiquetas">${showSport ? sportTagHtml(sportOf(match)) : ""}<span class="etiqueta ${match.minerIsAway ? "" : "etiqueta-local"}">${match.minerIsAway ? "Visitante" : "Local"}</span></span>
       </div>
     </article>`;
 }
@@ -146,6 +196,33 @@ export function newsCardHtml(item) {
         <p>${sanitizeText(item.summary, 140)}</p>
       </div>
     </a>`;
+}
+
+// Pantalla de fuera de temporada: ningún deporte activo (spec 003, CA-04). Con `config`, muestra las redes (spec 004).
+export function offSeasonHtml(extraHtml = "", config = null) {
+  return `
+    <section class="fuera-temporada" aria-labelledby="t-fuera">
+      <img src="assets/icons/escudo.png" alt="" width="144" height="102">
+      <h1 id="t-fuera">Volvemos pronto</h1>
+      <p>Por ahora no hay temporada de Mineros. Aquí vas a encontrar los juegos, la transmisión y el chat en cuanto regresen.</p>
+      ${config ? socialBlockHtml(socialLinks(config, { onlyActive: false })) : ""}
+      <a class="boton boton-borde" href="noticias.html">Leer las noticias</a>
+    </section>
+    ${extraHtml}`;
+}
+
+// Muestra "Volvemos pronto" y oculta todo lo marcado con data-solo-temporada. Devuelve si está fuera de temporada.
+export function toggleOffSeason(off, extraHtml = "", config = null) {
+  const box = document.getElementById("fueraTemporada");
+  if (box) {
+    box.hidden = !off;
+    box.innerHTML = off ? offSeasonHtml(extraHtml, config) : "";
+  }
+  document.querySelectorAll("[data-solo-temporada]").forEach(el => {
+    if (off) el.hidden = true;
+    else if (el.dataset.ocultoPorTemporada !== "no") el.hidden = false;
+  });
+  return off;
 }
 
 export function emptyHtml(title, text) {

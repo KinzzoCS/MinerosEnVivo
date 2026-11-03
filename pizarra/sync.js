@@ -23,7 +23,7 @@ start();
 
 async function start() {
   const gate = buildGate();
-  firebase = await getFirebase();
+  firebase = await getFirebase({ auth: true });
   if (!firebase) {
     gate.message("La conexión con Firebase no está configurada en este sitio. No se puede verificar el acceso.");
     return;

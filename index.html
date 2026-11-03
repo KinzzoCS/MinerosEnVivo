@@ -20,7 +20,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   </script>
   <!-- End Google tag -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Mineros TV | Béisbol en vivo, Mineros de Parral, Estatal Chihuahua 2026</title>
+  <title>Mineros TV | Béisbol y básquetbol en vivo de Mineros de Parral, Estatal Chihuahua 2026</title>
   <meta name="description" content="Mineros TV: transmisiones en vivo de béisbol, Mineros de Parral, Estatal de Chihuahua 2026. Noticias, roster, resultados y comunidad del béisbol en Parral, Chihuahua.">
   <meta name="keywords" content="Mineros de Parral, béisbol en vivo, Estatal Chihuahua 2026, béisbol Parral, transmisión béisbol, liga estatal Chihuahua, mineros tv, béisbol chihuahua">
   <meta name="robots" content="index, follow">
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Big+Shoulders+Display:wght@600;800;900&family=Big+Shoulders+Stencil+Display:wght@800&display=swap">
-  <link rel="stylesheet" href="assets/css/main.css?v=20261019">
+  <link rel="stylesheet" href="assets/css/main.css?v=20261103d">
 </head>
 <body>
   <!-- Google Tag Manager (noscript) -->
@@ -60,8 +60,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <header class="app-header">
     <div class="app-header-inner">
       <a class="marca" href="index.html"><img src="assets/icons/escudo.png" alt="" width="58" height="41">Mineros<span>TV</span></a>
-      <nav class="nav-escritorio" aria-label="Secciones">
-        <a href="index.html" aria-current="page">En vivo</a>
+      <nav class="nav-escritorio" aria-label="Secciones de la app (escritorio)">
+        <a href="index.html" aria-current="page">Inicio</a>
+        <a href="envivo.html">En vivo</a>
         <a href="calendario.html">Calendario</a>
         <a href="roster.html">Equipo</a>
         <a href="noticias.html">Noticias</a>
@@ -69,89 +70,40 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <button class="boton-ajustes" type="button" data-abrir-ajustes aria-label="Ajustes de letra y color">Aa</button>
     </div>
   </header>
+  <nav class="tabs" aria-label="Secciones de la app">
+    <a class="tab" href="index.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg><span>Inicio</span></a>
+    <a class="tab" href="envivo.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>En vivo</span></a>
+    <a class="tab" href="calendario.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span>Calendario</span></a>
+    <a class="tab" href="roster.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.4 0 4 1.5 4.5 4"/></svg><span>Equipo</span></a>
+    <a class="tab" href="noticias.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h10M7 17h6"/></svg><span>Noticias</span></a>
+  </nav>
   <main class="pagina" id="contenido">
-    <div class="envivo-grid">
-      <section class="transmision" aria-labelledby="liveTitle">
-        <div id="sinJuego" hidden></div>
-        <div class="selector" role="group" aria-label="Elige la transmisión">
-          <button type="button" data-stream-option="1" aria-pressed="true">Mineros TV</button>
-          <button type="button" data-stream-option="2" aria-pressed="false">La Poderosa De Parral</button>
-        </div>
-        <div class="video cargando" id="playerFrame">
-          <iframe id="streamFrame" title="Transmisión en vivo de Mineros TV" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
-        </div>
-        <div class="estado">
-          <div class="estado-fila">
-            <span class="pastilla pastilla-espera" id="liveStatus">Cargando</span>
-            <span class="espectadores" id="viewers" hidden><strong id="viewersCount">0</strong> viendo ahora</span>
-          </div>
-          <h1 id="liveTitle">Mineros TV en vivo</h1>
-        </div>
-        <div id="liveScore" aria-live="polite" hidden></div>
-      </section>
-
-      <aside class="chat tarjeta" aria-labelledby="chatTitle">
-        <div class="chat-cabeza">
-          <h2 id="chatTitle">Chat en vivo</h2>
-          <p class="chat-identidad">Comentas como <strong id="displayName">Minero</strong> <button class="boton-texto" id="renameBtn" type="button">Cambiar</button></p>
-        </div>
-        <div class="chat-feed" id="chatFeed" aria-live="polite">
-          <p class="chat-vacio">Todavía no hay mensajes. Escribe el primero.</p>
-        </div>
-        <div class="chat-pie">
-          <form class="chat-form" id="chatForm">
-            <label class="solo-lector" for="chatInput">Mensaje</label>
-            <input id="chatInput" maxlength="180" autocomplete="off" enterkeyhint="send" placeholder="Escribe un mensaje">
-            <button type="submit" aria-label="Enviar mensaje"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12.6 2-12.6 2z"/></svg></button>
-          </form>
-          <p class="chat-nota" id="chatNote">Sin registro. Respeta a la comunidad minera.</p>
-        </div>
-      </aside>
+    <div id="fueraTemporada" hidden></div>
+    <div class="intro" data-solo-temporada>
+      <h1>Inicio</h1>
+      <p>Transmisiones, juegos y resultados de Mineros. Elige un deporte para ver todo lo suyo.</p>
     </div>
-
-    <section class="seccion" aria-labelledby="t-resultado">
-      <div class="seccion-cabeza"><h2 id="t-resultado">Último resultado</h2><a href="calendario.html#resultados">Ver resultados</a></div>
-      <div id="lastResult"></div>
-    </section>
-
-    <section class="seccion" aria-labelledby="t-proximos">
-      <div class="seccion-cabeza"><h2 id="t-proximos">Próximos juegos</h2><a href="calendario.html">Ver calendario</a></div>
-      <div class="juegos" id="matchesGrid"></div>
-    </section>
-
+    <div id="avisoVivo" aria-live="polite"></div>
+    <div class="deportes" id="sportCards" data-solo-temporada></div>
     <section class="seccion" aria-labelledby="t-noticias">
-      <div class="seccion-cabeza"><h2 id="t-noticias">Noticias</h2><a href="noticias.html">Ver todas</a></div>
+      <div class="seccion-cabeza"><h2 id="t-noticias">Últimas noticias</h2><a href="noticias.html">Ver todas</a></div>
       <div class="noticias" id="newsGrid"></div>
+    </section>
+    <section class="seccion" id="redesInicio" aria-labelledby="t-redes" data-solo-temporada hidden>
+      <h2 id="t-redes">Síguenos</h2>
+      <div id="redesLista"></div>
     </section>
   </main>
   <footer class="pie">
     <div class="pie-inner">
-      <p>&copy; 2026 Mineros TV. Béisbol de Mineros de Parral.</p>
+      <p>&copy; 2026 Mineros TV. Mineros de Parral.</p>
       <a class="credito" href="https://nexpa.mx" target="_blank" rel="noopener">
         <span>Desarrollado por</span>
         <img src="assets/img/nexpa%20logo.jpeg" alt="Nexpa" width="64" height="28">
       </a>
     </div>
   </footer>
-  <nav class="tabs" aria-label="Secciones">
-    <a class="tab" href="index.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8M12 17v4"/></svg><span>En vivo</span></a>
-    <a class="tab" href="calendario.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span>Calendario</span></a>
-    <a class="tab" href="roster.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M17 14c2.4 0 4 1.5 4.5 4"/></svg><span>Equipo</span></a>
-    <a class="tab" href="noticias.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9h10M7 13h10M7 17h6"/></svg><span>Noticias</span></a>
-  </nav>
-  <dialog class="hoja" id="nameDialog" aria-labelledby="nameTitle">
-    <form method="dialog" class="hoja-cuerpo" id="nameForm">
-      <div class="hoja-cabeza">
-        <h2 id="nameTitle">Tu nombre en el chat</h2>
-        <button class="cerrar" value="cancelar" formnovalidate aria-label="Cerrar">×</button>
-      </div>
-      <label class="campo" for="nameInput">Nombre
-        <input id="nameInput" maxlength="26" minlength="3" required autocomplete="nickname">
-      </label>
-      <button class="boton boton-rojo boton-ancho" value="guardar">Guardar nombre</button>
-    </form>
-  </dialog>
-  <script type="module" src="assets/js/shell.js?v=20261019"></script>
-  <script type="module" src="assets/js/app.js?v=20261019"></script>
+  <script type="module" src="assets/js/shell.js?v=20261103d"></script>
+  <script type="module" src="assets/js/inicio.js?v=20261103d"></script>
 </body>
 </html>
