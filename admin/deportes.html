@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Deportes | Panel Mineros TV</title>
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#19191B" media="(prefers-color-scheme: dark)">
+  <script>try{var p=JSON.parse(localStorage.getItem("mineros_prefs")||"{}");if(p.theme==="light"||p.theme==="dark")document.documentElement.dataset.theme=p.theme;if(p.text==="grande"||p.text==="enorme")document.documentElement.dataset.text=p.text;}catch(e){}</script>
+  <link rel="icon" href="../favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Big+Shoulders+Display:wght@600;800;900&family=Big+Shoulders+Stencil+Display:wght@800&display=swap">
+  <link rel="stylesheet" href="../assets/css/main.css?v=20261103d">
+  <link rel="stylesheet" href="../assets/css/admin.css?v=20261103d">
+</head>
+<body class="cargando">
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <div class="panel">
+    <header class="panel-cabeza">
+      <a class="marca" href="dashboard.html"><img src="../assets/icons/escudo.png" alt="" width="48" height="34">Panel<span>MTV</span></a>
+      <span class="panel-usuario" data-admin-email></span>
+      <button class="boton-ajustes" type="button" data-abrir-ajustes aria-label="Ajustes de letra y color">Aa</button>
+      <button class="boton boton-borde boton-chico" type="button" data-logout>Salir</button>
+    </header>
+    <nav class="panel-nav" data-admin-nav aria-label="Secciones del panel"></nav>
+    <main class="panel-main" id="contenido">
+      <div class="panel-titulo">
+        <h1>Deportes</h1>
+        <p>Enciende o apaga cada deporte y edita el nombre y el escudo de cada equipo de Mineros.</p>
+      </div>
+      <form class="formulario tarjeta" id="sportsForm">
+        <fieldset>
+          <legend>Béisbol</legend>
+          <label class="interruptor"><input type="checkbox" id="activo-beisbol"><span>Mostrar béisbol en la app<small>Apágalo fuera de temporada. Si apagas los dos deportes, la app muestra "Volvemos pronto".</small></span></label>
+          <div class="campos">
+            <label class="campo" for="equipo-beisbol">Nombre corto<input id="equipo-beisbol" maxlength="30" required><small>Se usa en el calendario: «Mineros vs Dorados».</small></label>
+            <label class="campo" for="nombre-beisbol">Nombre completo<input id="nombre-beisbol" maxlength="60" required><small>Por ejemplo: Mineros de Parral.</small></label>
+          </div>
+          <label class="campo" for="liga-beisbol">Liga o torneo<input id="liga-beisbol" maxlength="60"></label>
+          <fieldset class="grupo">
+            <legend>Redes sociales</legend>
+            <p class="tenue">Si ninguna transmisión está en vivo, la app invita a seguir estas redes para saber cuándo es el próximo juego.</p>
+            <div class="campos">
+              <label class="campo" for="red-beisbol-facebook">Facebook<input id="red-beisbol-facebook" type="url" inputmode="url" placeholder="https://"></label><label class="campo" for="red-beisbol-instagram">Instagram<input id="red-beisbol-instagram" type="url" inputmode="url" placeholder="https://"></label><label class="campo" for="red-beisbol-youtube">YouTube<input id="red-beisbol-youtube" type="url" inputmode="url" placeholder="https://"></label><label class="campo" for="red-beisbol-tiktok">TikTok<input id="red-beisbol-tiktok" type="url" inputmode="url" placeholder="https://"></label><label class="campo" for="red-beisbol-x">X<input id="red-beisbol-x" type="url" inputmode="url" placeholder="https://"></label><label class="campo" for="red-beisbol-whatsapp">WhatsApp<input id="red-beisbol-whatsapp" type="url" inputmode="url" placeholder="https://"></label>
+            </div>
+          </fieldset>
+          <div class="campos">
+            <div class="campo">Escudo
+              <img id="escudoVista-beisbol" class="vista-imagen" alt="Escudo de béisbol" hidden>
+              <small>PNG con fondo transparente de preferencia. Se reduce a 256 px.</small>
+            </div>
+            <div class="campos" style="grid-template-columns:1fr">
+              <label class="campo" for="escudoArchivo-beisbol">Subir escudo<input id="escudoArchivo-beisbol" type="file" accept="image/*"></label>
+              <label class="campo" for="escudoUrl-beisbol">O pegar URL<input id="escudoUrl-beisbol" type="text" inputmode="url" placeholder="https://"></label>
+              <button class="boton boton-borde boton-chico" type="button" id="escudoQuitar-beisbol">Quitar escudo</button>
+            </div>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Básquetbol</legend>
+          <label class="interruptor"><input type="checkbox" id="activo-basquetbol"><span>Mostrar básquetbol en la app<small>Apágalo fuera de temporada. Si apagas los dos deportes, la app muestra "Volvemos pronto".</small></span></label>
+          <div class="campos">
+            <label class="campo" for="equipo-basquetbol">Nombre corto<input id="equipo-basquetbol" maxlength="30" required><small>Se usa en el calendario: «Mineros vs Dorados».</small></label>
+            <label class="campo" for="nombre-basquetbol">Nombre completo<input id="nombre-basquetbol" maxlength="60" required><small>Por ejemplo: Mineros de Parral.</small></label>
+          </div>
+          <label class="campo" for="liga-basquetbol">Liga o torneo<input id="liga-basquetbol" maxlength="60"></label>
+          <fieldset class="grupo">
+            <legend>Redes sociales</legend>
+            <p class="tenue">Si ninguna transmisión está en vivo, la app invita a seguir estas redes para saber cuándo es el próximo juego.</p>
+            <div class="campos">
+              <label class="campo" for="red-basquetbol-facebook">Facebook<input id="red-basquetbol-facebook" type="url" inputmode="url" placeholder="https://"></label><label class="campo" for="red-basquetbol-instagram">Instagram<input id="red-basquetbol-instagram" type="url" inputmode="url" placeholder="https://"></label><label class="campo" for="red-basquetbol-youtube">YouTube<input id="red-basquetbol-youtube" type="url" inputmode="url" placeholder="https://"></label><label class="campo" for="red-basquetbol-tiktok">TikTok<input id="red-basquetbol-tiktok" type="url" inputmode="url" placeholder="https://"></label><label class="campo" for="red-basquetbol-x">X<input id="red-basquetbol-x" type="url" inputmode="url" placeholder="https://"></label><label class="campo" for="red-basquetbol-whatsapp">WhatsApp<input id="red-basquetbol-whatsapp" type="url" inputmode="url" placeholder="https://"></label>
+            </div>
+          </fieldset>
+          <div class="campos">
+            <div class="campo">Escudo
+              <img id="escudoVista-basquetbol" class="vista-imagen" alt="Escudo de básquetbol" hidden>
+              <small>PNG con fondo transparente de preferencia. Se reduce a 256 px.</small>
+            </div>
+            <div class="campos" style="grid-template-columns:1fr">
+              <label class="campo" for="escudoArchivo-basquetbol">Subir escudo<input id="escudoArchivo-basquetbol" type="file" accept="image/*"></label>
+              <label class="campo" for="escudoUrl-basquetbol">O pegar URL<input id="escudoUrl-basquetbol" type="text" inputmode="url" placeholder="https://"></label>
+              <button class="boton boton-borde boton-chico" type="button" id="escudoQuitar-basquetbol">Quitar escudo</button>
+            </div>
+          </div>
+        </fieldset>
+        <div class="acciones-form">
+          <button class="boton boton-rojo" type="submit">Guardar deportes</button>
+          <p class="aviso" id="formNote" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+    </main>
+  </div>
+  <script type="module" src="../assets/js/shell.js?v=20261103d"></script>
+  <script type="module" src="../assets/js/admin/sports-admin.js?v=20261103d"></script>
+</body>
+</html>

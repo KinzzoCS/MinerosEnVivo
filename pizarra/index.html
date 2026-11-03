@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Pizarra Estadio 8000x1500</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Barlow+Condensed:wght@500;700;800&family=Bangers&family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Quicksand:wght@500;600;700&family=Rajdhani:wght@600;700&family=Rubik:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Teko:wght@500;600;700&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="stage-wrap">
+      <div class="stage-scale">
+        <div id="scoreboard-stage" class="scoreboard-stage">
+
+          <!-- ══════════════════════════════════════════
+               SECCIÓN SUPERIOR
+               [Logo patrocinador] | [BSO]
+               ══════════════════════════════════════════ -->
+          <div class="top-section">
+
+            <!-- Panel de logo / patrocinador -->
+            <div class="sponsor-panel">
+              <img id="sponsorLogo" alt="Patrocinador" />
+            </div>
+
+            <!-- Panel BSO — grid 3 col × 2 filas (label arriba, número abajo) -->
+            <div class="bso-panel">
+              <div class="bso-label">BOLAS</div>
+              <div class="bso-label">STRIKES</div>
+              <div class="bso-label">OUTS</div>
+              <div class="bso-value" id="statusBalls">0</div>
+              <div class="bso-value" id="statusStrikes">0</div>
+              <div class="bso-value" id="statusOuts">0</div>
+            </div>
+
+          </div>
+
+          <!-- ══════════════════════════════════════════
+               FRANJA INFERIOR
+               [Nombres] | [Innings 1–9] | [C H E]
+               ══════════════════════════════════════════ -->
+          <div class="bottom-strip">
+
+            <!-- Columna de nombres de equipo / logos -->
+            <div class="teams-col">
+              <!-- Espaciador que alinea con la fila CHE superior -->
+              <div class="team-mid-sep"></div>
+              <div class="team-name-cell" id="teamANameCell">
+                <span class="team-name-text" id="teamANameText">VISITANTE</span>
+                <img class="team-name-logo" id="teamALogo" alt="Escudo visitante" />
+              </div>
+              <div class="team-sep"></div>
+              <div class="team-name-cell" id="teamBNameCell">
+                <span class="team-name-text" id="teamBNameText">MINEROS</span>
+                <img class="team-name-logo" id="teamBLogo" alt="Escudo local" />
+              </div>
+            </div>
+
+            <!-- Área de innings: marcadores de número + filas de datos -->
+            <div class="innings-wrap">
+              <!-- Header: números de inning como watermark grande -->
+              <div class="inning-headers" id="inningMarkers"></div>
+              <!-- Espaciador que alinea con la fila CHE (arriba del visitante) -->
+              <div class="innings-che-header-row"></div>
+              <!-- Datos equipo A -->
+              <div class="inning-data-row" id="teamAInnings"></div>
+              <!-- Datos equipo B -->
+              <div class="inning-data-row" id="teamBInnings"></div>
+            </div>
+
+            <!-- Columna CHE -->
+            <div class="che-col">
+
+              <!-- Fila cabecera C / H / E (arriba del todo) -->
+              <div class="che-header-row">
+                <div class="che-header-cell">C</div>
+                <div class="che-header-cell">H</div>
+                <div class="che-header-cell">E</div>
+              </div>
+
+              <!-- Fila visitante -->
+              <div class="che-data-row">
+                <div class="che-col-cell">
+                  <span class="rhe-cell" id="teamAR">0</span>
+                </div>
+                <div class="che-col-cell">
+                  <span class="rhe-cell" id="teamAH">0</span>
+                </div>
+                <div class="che-col-cell">
+                  <span class="rhe-cell" id="teamAE">0</span>
+                </div>
+              </div>
+
+              <!-- Fila local -->
+              <div class="che-data-row">
+                <div class="che-col-cell">
+                  <span class="rhe-cell" id="teamBR">0</span>
+                </div>
+                <div class="che-col-cell">
+                  <span class="rhe-cell" id="teamBH">0</span>
+                </div>
+                <div class="che-col-cell">
+                  <span class="rhe-cell" id="teamBE">0</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- IDs que necesita el JS (ocultos) -->
+          <span id="statusInning" style="display:none">1</span>
+          <span id="statusHalf"   style="display:none">ALTA</span>
+
+        </div>
+      </div>
+      <p class="obs-hint">Vista pública 8000×1500 para OBS. Usa control.html para operar.</p>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
+<!-- Firmado por Alan Flores para Estadio Mineros de Parral  al dia 19-05-2026 a las 12:16 P.M. -->

@@ -1,33 +1,53 @@
 import { requireAdmin } from "./admin-common.js";
-import { qs } from "../utils.js";
+import { qs, sanitizeText } from "../utils.js";
+import { isLiveGame } from "../components.js";
+import { SPORT_LABELS } from "../sports.js";
+import { legacyStreams, normalizeStream, sortStreams } from "../streams.js";
 
 const firebase = await requireAdmin();
 if (firebase) {
   const { db, firestore } = firebase;
-
-  async function countCollection(name, filter = null) {
-    const ref = filter ? firestore.query(firestore.collection(db, name), filter) : firestore.collection(db, name);
-    const snap = await firestore.getCountFromServer(ref);
-    return [name, snap.data().count];
-  }
-
-  const counts = await Promise.all([
-    countCollection("news"),
-    countCollection("players"),
-    countCollection("chatMessages", firestore.where("status", "==", "visible")),
-    countCollection("matches"),
-    countCollection("results")
-  ]);
-
-  const labels = { news: "Noticias", players: "Jugadores", chatMessages: "Mensajes", matches: "Próximos partidos", results: "Resultados" };
-  const countsMap = Object.fromEntries(counts);
-  qs("#statsGrid").innerHTML = counts.map(([name, count]) => `<article class="stat-card"><p class="section-kicker">${labels[name]}</p><h2>${count}</h2></article>`).join("");
-  const quickItems = [
-    ["partidos.html", "Partidos", `${countsMap.matches || 0} registros disponibles`],
-    ["resultados.html", "Resultados", `${countsMap.results || 0} resultados registrados`],
-    ["noticias.html", "Noticias", `${countsMap.news || 0} noticias publicadas`],
-    ["jugadores.html", "Jugadores", `${countsMap.players || 0} jugadores registrados`],
-    ["chat.html", "Chat", `${countsMap.chatMessages || 0} mensajes activos`]
+  const count = async (name, filter = null) => {
+    try {
+      const ref = filter ? firestore.query(firestore.collection(db, name), filter) : firestore.collection(db, name);
+      return (await firestore.getCountFromServer(ref)).data().count;
+    } catch {
+      return "–";
+    }
+  };
+  const items = [
+    ["matches", "Juegos", "partidos.html"],
+    ["results", "Resultados", "resultados.html"],
+    ["players", "Jugadores", "jugadores.html"],
+    ["news", "Noticias", "noticias.html"],
+    ["chatMessages", "Mensajes", "chat.html", firestore.where("status", "==", "visible")]
   ];
-  qs("#quickActions").innerHTML = quickItems.map(([href, label, subtitle]) => `<article class="admin-row"><div><strong>${label}</strong><p class="meta">${subtitle}</p></div><div class="row-actions"><a class="ghost-button" href="${href}">Abrir</a></div></article>`).join("");
+  const counts = await Promise.all(items.map(([name, , , filter]) => count(name, filter)));
+  qs("#resumen").innerHTML = items.map(([, label, href], i) =>
+    `<a class="dato tarjeta" href="${href}"><strong>${counts[i]}</strong><span>${label}</span></a>`).join("");
+
+  let settings = {};
+  let streamDocs = [];
+  let liveGame = null;
+  const renderLive = () => {
+    const all = streamDocs.length ? streamDocs : legacyStreams(settings);
+    const streams = sortStreams(all.map(normalizeStream)).filter(s => s.live).map(s =>
+      `${sanitizeText(s.name, 60)}${s.title ? `: ${sanitizeText(s.title, 80)}` : ""} (${SPORT_LABELS[s.sport]})`);
+    const pizarra = isLiveGame(liveGame) ? `<span class="pastilla pastilla-vivo">Pizarra en vivo</span>` : "";
+    qs("#estadoVivo").innerHTML = streams.length
+      ? `<span class="pastilla pastilla-vivo">En vivo</span><span>${new Intl.ListFormat("es-MX", { type: "conjunction" }).format(streams)}</span>${pizarra}`
+      : `<span class="pastilla pastilla-espera">Sin transmisión en vivo</span><a class="boton-texto" href="stream.html">Configurar transmisiones</a>${pizarra}`;
+  };
+  firestore.onSnapshot(firestore.doc(db, "settings", "main"), snap => {
+    settings = snap.exists() ? snap.data() : {};
+    renderLive();
+  });
+  firestore.onSnapshot(firestore.collection(db, "streams"), snap => {
+    streamDocs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderLive();
+  });
+  firestore.onSnapshot(firestore.doc(db, "liveGame", "actual"), snap => {
+    liveGame = snap.exists() ? snap.data() : null;
+    renderLive();
+  });
 }

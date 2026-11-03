@@ -1,0 +1,632 @@
+/* ════════════════════════════════════════════════════════════
+   VARIABLES
+   ════════════════════════════════════════════════════════════ */
+:root {
+  --bg-0: #000000;
+  --bg-1: #000000;
+  --line: #c0392b;
+  --digit: #f4f4f6;
+  --diamond: #d93831;
+  --diamond-text: #ffea68;
+  --name-box-a: #000000;
+  --name-box-b: #000000;
+  --team-name-color: #ffffff;
+  --rhe-color: #f4f4f6;
+  --count-color: #f4f7ff;
+  --count-bg: rgba(2, 12, 26, 0.86);
+  --count-border: #dbe1ea;
+  --sponsor-bg: #000000;
+
+  /* Fuentes */
+  --font-main: "Barlow Condensed", sans-serif;
+  --font-num:  "Quicksand", sans-serif;
+
+  /* Brillo ajustable */
+  --digit-brightness: 1;      /* brillo números pizarra (innings, CHE, BSO) */
+  --text-brightness:  1;      /* brillo texto general (nombres equipos, labels) */
+  --marker-opacity:   0.4;    /* opacidad watermark números grandes           */
+  --header-marker-opacity: 1;    /* opacidad números de entrada en fila header  */
+  --header-marker-size: 70px;    /* tamaño fuente números header             */
+  --header-marker-color: #ffffff; /* color texto números header              */
+
+  /* Tamaños ajustables por el panel de control */
+  --team-name-size: 140px;
+  --inning-size:    200px;
+  --rhe-size:       220px;
+  --bso-label-size: 72px;
+  --bso-value-size: 300px;
+  --che-label-size: 90px;
+
+  /* Proporciones de layout */
+  --sponsor-ratio:  0.60;
+  --bso-width:      2600px;
+  --team-col-width: 1500px;
+  --che-col-width: 1800px;
+  --team-logo-scale: 1;
+  --bottom-height:  750px;
+
+  /* Strip del logo en teams */
+  --logo-col-width: 280px;
+  --logo-size: 300px;
+  --logo-scale: 1;
+  --sponsor-scale-x: 1;
+  --sponsor-scale-y: 1;
+  --line-thickness: 10px;
+
+  /* Fila cabecera CHE */
+  --che-header-height: 120px;
+  --che-header-bg:     #1a1a1a;
+  --che-header-color:  #d9d9d9;
+  --che-header-font-size: 90px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   BASE
+   ════════════════════════════════════════════════════════════ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-main);
+  color: #f5f5f7;
+  background: #0f0f13;
+}
+
+/* ════════════════════════════════════════════════════════════
+   APP SHELL
+   ════════════════════════════════════════════════════════════ */
+.app-shell {
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   STAGE WRAPPER & AUTO-SCALE
+   ════════════════════════════════════════════════════════════ */
+.stage-wrap {
+  display: grid;
+  gap: 8px;
+  min-height: calc(100vh - 28px);
+  align-content: center;
+  justify-items: center;
+}
+
+.stage-scale {
+  width: 100%;
+  max-width: 100%;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #0b0a10;
+}
+
+/* ════════════════════════════════════════════════════════════
+   SCOREBOARD STAGE  (8000 × 1500 px, escala automática)
+   ════════════════════════════════════════════════════════════ */
+.scoreboard-stage {
+  width: 8000px;
+  height: 1575px;
+  transform-origin: top left;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, var(--bg-0) 0%, var(--bg-1) 100%);
+}
+
+/* ════════════════════════════════════════════════════════════
+   SECCIÓN SUPERIOR
+   Layout: [Sponsor (flex:1)] | [BSO fijo]
+   ════════════════════════════════════════════════════════════ */
+.top-section {
+  flex: 1;              /* 50% del stage */
+  display: flex;
+  flex-direction: row;
+  min-height: 0;
+  border-bottom: var(--line-thickness) solid var(--line);
+}
+
+/* ── Panel patrocinador ── */
+.sponsor-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--sponsor-bg, #ffffff);
+  overflow: hidden;
+  padding: 40px;
+}
+
+.sponsor-panel img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transform: scaleX(var(--sponsor-scale-x)) scaleY(var(--sponsor-scale-y));
+  transform-origin: center center;
+}
+
+/* ── Panel BSO ── */
+.bso-panel {
+  width: var(--bso-width);
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto 1fr;
+  background: var(--bg-1);
+  border-left: var(--line-thickness) solid var(--line);
+}
+
+.bso-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-main);
+  font-size: var(--bso-label-size);
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--count-color);
+  background: var(--bg-0);
+  padding: 24px 0;
+  border-bottom: calc(var(--line-thickness) * 0.66) solid rgba(255,255,255,0.15);
+  filter: brightness(var(--text-brightness));
+}
+
+.bso-label + .bso-label {
+  border-left: calc(var(--line-thickness) * 0.66) solid rgba(255,255,255,0.15);
+}
+
+.bso-value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-num);
+  font-size: var(--bso-value-size);
+  font-weight: 700;
+  color: var(--count-color);
+  line-height: 1;
+  filter: brightness(var(--digit-brightness));
+}
+
+.bso-value + .bso-value {
+  border-left: calc(var(--line-thickness) * 0.66) solid rgba(255,255,255,0.12);
+}
+
+/* ════════════════════════════════════════════════════════════
+   FRANJA INFERIOR
+   Layout: [nombres] | [innings wrap] | [CHE]
+   ════════════════════════════════════════════════════════════ */
+.bottom-strip {
+  flex: 1;              /* 50% del stage, igual que top-section */
+  display: flex;
+  flex-direction: row;
+  background: var(--bg-1);
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ── Columna de nombres de equipos ── */
+.teams-col {
+  width: var(--team-col-width);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 5px solid rgba(255,255,255,0.15);
+}
+
+.team-name-cell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0 50px;
+  font-family: var(--font-main);
+  font-size: var(--team-name-size);
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--team-name-color);
+  background: var(--name-box-a);
+  border: 2px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+
+.team-name-cell:last-of-type {
+  background: var(--name-box-b);
+}
+
+.team-name-text {
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  padding: 0 40px;
+  filter: brightness(var(--text-brightness));
+}
+
+.team-name-logo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: auto;
+  height: auto;
+  max-width: calc(84% * var(--team-logo-scale));
+  max-height: calc(84% * var(--team-logo-scale));
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.team-sep {
+  height: calc(var(--line-thickness) / 2);
+  background: var(--line);
+  flex-shrink: 0;
+}
+
+/* Separador invisible que alinea con la fila CHE intermedia */
+.team-mid-sep {
+  height: var(--che-header-height);
+  flex-shrink: 0;
+  background: var(--che-header-bg);
+  border-top: calc(var(--line-thickness) / 2) solid var(--line);
+  border-bottom: calc(var(--line-thickness) / 2) solid var(--line);
+}
+
+/* ── Área de innings ── */
+.innings-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/*
+  Cabecera de innings: los números 1–9 se muestran como texto
+  GIGANTE y semitransparente (como watermark de fondo).
+*/
+.inning-headers {
+  /* Ocupa toda la altura de la franja, posicionado como fondo */
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Cada número de inning como watermark */
+.inning-headers .inning-num {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-num);
+  font-size: 520px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 1);
+  opacity: var(--marker-opacity);
+  line-height: 1;
+  user-select: none;
+  transition: opacity 0.4s ease;
+}
+
+/* Estado oculto para los números watermark */
+.inning-headers.hidden-markers .inning-num {
+  opacity: 0;
+}
+
+/* Filas de datos de innings (sobre el watermark) */
+.inning-data-row {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  z-index: 1;
+}
+
+.inning-data-row + .inning-data-row {
+  border-top: calc(var(--line-thickness) / 2) solid var(--line);
+}
+
+/* Cada celda de inning generada por JS */
+.inning-cell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-num);
+  font-size: var(--inning-size);
+  font-weight: 700;
+  color: var(--digit);
+  line-height: 1;
+  filter: brightness(var(--digit-brightness));
+}
+
+/* ── Columna C H E ── */
+.che-col {
+  width: var(--che-col-width);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-left: calc(var(--line-thickness) * 0.83) solid var(--line);
+}
+
+/* Cada celda de la columna CHE: apila label + valor en columna */
+.che-col-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-left: 3px solid rgba(255,255,255,0.4);
+}
+
+.che-col-cell:first-child {
+  border-left: none;
+}
+
+/* Label "C", "H" o "E" visible sobre la fila del visitante */
+.che-col-lbl {
+  font-family: var(--font-main);
+  font-size: var(--che-label-size);
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1;
+  display: block;
+}
+
+/* ── Fila cabecera CHE (arriba, color sólido) ── */
+.che-header-row {
+  height: var(--che-header-height);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  background: var(--che-header-bg);
+  border-bottom: calc(var(--line-thickness) / 2) solid var(--line);
+  position: relative;
+  z-index: 2;
+}
+
+.che-header-cell {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-main);
+  font-size: var(--che-header-font-size);
+  font-weight: 900;
+  letter-spacing: 6px;
+  color: var(--che-header-color);
+  line-height: 1;
+  border-left: 3px solid rgba(255,255,255,0.3);
+  filter: brightness(var(--text-brightness));
+}
+
+.che-header-cell:first-child {
+  border-left: none;
+}
+
+/* Fila de números de entrada en el header (alineado con CHE) */
+.innings-che-header-row {
+  height: var(--che-header-height);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  background: var(--che-header-bg);
+  border-bottom: calc(var(--line-thickness) / 2) solid var(--line);
+  position: relative;
+  z-index: 2;
+}
+
+.innings-che-header-row .header-inning-num {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-num);
+  font-size: var(--header-marker-size);
+  font-weight: 700;
+  color: var(--header-marker-color);
+  opacity: var(--header-marker-opacity);
+  line-height: 1;
+  user-select: none;
+  transition: opacity 0.3s ease;
+}
+
+.che-data-row {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  z-index: 1;
+}
+
+.che-data-row + .che-data-row {
+  border-top: calc(var(--line-thickness) / 2) solid var(--line);
+}
+
+.rhe-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-num);
+  font-size: var(--rhe-size);
+  font-weight: 700;
+  color: var(--rhe-color);
+  line-height: 1;
+  flex: 1;
+  width: 100%;
+  filter: brightness(var(--digit-brightness));
+}
+
+/* ════════════════════════════════════════════════════════════
+   OBS HINT
+   ════════════════════════════════════════════════════════════ */
+.obs-hint {
+  color: #c8c6d3;
+  font-size: 18px;
+  margin-top: 6px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   PANEL DE CONTROL (control.html)
+   ════════════════════════════════════════════════════════════ */
+.control-panel-classic {
+  border: 4px solid #d5d5d5;
+  background: #3a3a3a;
+  padding: 10px;
+}
+.cp-title {
+  text-align: center;
+  font-size: 44px;
+  color: #fff;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #a9a9a9;
+}
+.cp-grid { display: grid; gap: 8px; margin-bottom: 8px; }
+.top-metrics { grid-template-columns: repeat(6, minmax(140px, 1fr)); }
+.teams-edit { grid-template-columns: 1fr 1fr 1.4fr; }
+.innings-grid-wrap { grid-template-columns: 2.5fr 1fr; }
+
+.metric-card, .edit-card, .innings-matrix, .rhe-box {
+  background: #4a4a4a;
+  border: 2px solid #8f8f8f;
+  padding: 8px;
+}
+.innings-matrix { overflow-x: auto; }
+h3 { margin: 0 0 6px; color: #fff; font-size: 24px; letter-spacing: 0.8px; }
+
+.metric-screen {
+  background: #0d0d0f;
+  color: #f4df4e;
+  font-family: "Teko", sans-serif;
+  font-size: 70px;
+  text-align: center;
+  line-height: 1;
+  border: 2px solid #666;
+  margin-bottom: 6px;
+}
+.metric-screen.half { font-size: 48px; color: #e9edf3; }
+
+.pm { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.pm.wrap { grid-template-columns: repeat(2, 1fr); }
+
+label { display: grid; gap: 4px; color: #efefef; font-size: 18px; }
+input, select, button {
+  font-family: var(--font-main);
+  font-size: 18px;
+  border: 1px solid #c8c8c8;
+  border-radius: 3px;
+  padding: 6px;
+}
+input, select { background: #111; color: #fff; }
+input[type="color"] { padding: 2px; height: 36px; }
+button { background: #efefef; color: #171717; cursor: pointer; }
+button.active { background: #f2d74c; }
+button.danger { background: #c93a3a; color: #fff; border-color: #9b2626; }
+
+#inningsControls, #rheControls { display: grid; gap: 6px; }
+.control-row { display: grid; grid-template-columns: 80px 1fr 1fr; align-items: center; gap: 6px; color: #fff; }
+.btn-row { display: flex; gap: 6px; align-items: center; }
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 8px; }
+
+.inning-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(90px, 1fr));
+  gap: 6px;
+}
+.inning-table { display: grid; gap: 6px; min-width: 1040px; }
+.inning-table-row {
+  display: grid;
+  grid-template-columns: 54px repeat(10, 1fr);
+  gap: 6px;
+  align-items: stretch;
+  min-height: 108px;
+}
+.inning-table-row > span {
+  display: grid;
+  place-items: center;
+  background: #262626;
+  color: #fff;
+  font-weight: 700;
+  border: 1px solid #c9c9c9;
+}
+.inning-table-row.head > span { background: #222; }
+.it-cell {
+  display: grid;
+  grid-template-rows: 30px 34px 30px;
+  border: 1px solid #cfcfcf;
+  background: #4b4b4b;
+  min-width: 96px;
+}
+.it-cell button { padding: 0; font-size: 24px; font-weight: 700; line-height: 1; }
+.it-cell span {
+  display: grid;
+  place-items: center;
+  font-family: "Teko", sans-serif;
+  font-size: 40px;
+  color: #fff;
+  background: #111217;
+  border-top: 1px solid #a9a9a9;
+  border-bottom: 1px solid #a9a9a9;
+}
+
+.inning-quick-cell { border: 1px solid #a7a7a7; background: #3f3f3f; padding: 4px; }
+.iq-head { text-align: center; font-size: 22px; color: #fff; margin-bottom: 4px; font-weight: 700; }
+.iq-team { display: grid; grid-template-columns: 34px 1fr 38px 1fr; align-items: center; gap: 4px; margin-bottom: 4px; }
+.iq-label { color: #e8e8e8; font-size: 14px; text-align: center; }
+.iq-team button { padding: 4px 0; font-size: 20px; font-weight: 700; line-height: 1; }
+.iq-val {
+  display: grid;
+  place-items: center;
+  height: 34px;
+  background: #0f0f12;
+  color: #f8f8f9;
+  border: 1px solid #8c8c8c;
+  font-family: "Teko", sans-serif;
+  font-size: 30px;
+}
+
+/* Draw panel */
+.draw-panel { border: 2px solid #4d425f; background: #1a1721; border-radius: 8px; padding: 8px; display: grid; gap: 8px; }
+.draw-toolbar { display: flex; align-items: center; gap: 12px; color: #f0eef6; flex-wrap: wrap; }
+.draw-toolbar label { display: flex; align-items: center; gap: 6px; margin: 0; }
+#drawCanvas { width: 100%; height: 260px; border: 1px solid #6b6180; background: #0e0d14; touch-action: none; }
+
+/* ════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 1700px) {
+  .top-metrics { grid-template-columns: repeat(3, 1fr); }
+  .teams-edit { grid-template-columns: 1fr; }
+  .innings-grid-wrap { grid-template-columns: 1fr; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   OVERRIDES PARA control.html
+   ════════════════════════════════════════════════════════════ */
+body.control-page { min-height: 100vh; overflow: auto; }
+body.control-page .app-shell { max-width: 1920px; margin: 0 auto; padding: 10px; }
+body.control-page .control-panel-classic { min-height: calc(100vh - 20px); }
+body.control-page .cp-title { font-size: 34px; margin-bottom: 8px; }
+body.control-page h3 { font-size: 20px; margin-bottom: 4px; }
+body.control-page .metric-screen { font-size: 52px; }
+body.control-page .metric-screen.half { font-size: 40px; }
+body.control-page label,
+body.control-page input,
+body.control-page select,
+body.control-page button { font-size: 16px; }
+body.control-page .top-metrics { grid-template-columns: repeat(6, minmax(150px, 1fr)); }
+body.control-page .teams-edit { grid-template-columns: 1fr 1fr 1.2fr; }
+body.control-page .innings-grid-wrap { grid-template-columns: 2fr 1fr; }
+body.control-page .inning-table { min-width: 0; }
+body.control-page .inning-table-row { min-height: 92px; }
+body.control-page .it-cell { min-width: 78px; grid-template-rows: 26px 30px 26px; }
+body.control-page .it-cell span { font-size: 30px; }
+body.control-page #drawCanvas { height: 190px; }
+
+/* Firmado por Alan Flores para Estadio Mineros de Parral  al dia 19-05-2026 a las 12:16 P.M. */

@@ -12,9 +12,20 @@
       "storage.rules",
       ".github/**",
       ".git/**",
-      ".venv/**"
+      ".venv/**",
+      ".emulador/**",
+      "tests/**",
+      "scripts/**",
+      "specs/**",
+      "*.log"
     ],
     "cleanUrls": true,
     "trailingSlash": false
+  },
+  "emulators": {
+    "singleProjectMode": true,
+    "auth": { "host": "127.0.0.1", "port": 9099 },
+    "firestore": { "host": "127.0.0.1", "port": 8180 },
+    "ui": { "enabled": true, "host": "127.0.0.1", "port": 4000 }
   }
 }

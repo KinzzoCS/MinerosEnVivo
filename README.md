@@ -73,29 +73,84 @@ El UID lo obtienes desde Firebase Authentication despues de crear el usuario adm
 
 ## Colecciones
 
-- `settings/main`: URL del stream, titulo y estado en vivo.
+La app maneja béisbol (principal, con la pizarra) y básquetbol. Juegos, resultados y jugadores llevan `sport` (`beisbol` o `basquetbol`); las noticias, `sports` con uno o los dos. Un documento sin deporte cuenta como béisbol.
+
+
+- `streams`: medios de transmisión de YouTube (`name`, `title`, `url`, `live`, `sport`, `order`). En la app solo aparecen los que están en vivo; el id es el `streamId` del chat.
+- `settings/main`: formato anterior de dos transmisiones fijas. Solo se lee si `streams` está vacía; el panel las importa a `streams` la primera vez.
+- `settings/deportes`: por deporte (`beisbol`, `basquetbol`) si está activo, el nombre corto, nombre completo, liga, escudo y redes sociales (`redes`: facebook, instagram, youtube, tiktok, x, whatsapp). Si los dos están apagados, la app muestra "Volvemos pronto".
+- `championships`: campeonatos (`name`, `sport`, `logo`).
+- `seasons`: temporadas de cada campeonato (`championshipId`, `sport`, `name`, `startDate`, `endDate`, `logo` opcional). Juegos y resultados se ligan con `seasonId`.
 - `news`: noticias con titulo, resumen, contenido, URL de imagen y destacada.
 - `players`: jugadores, posicion, numero, biografia y URL de foto.
 - `matches`: proximos partidos.
-- `results`: resultados recientes.
+- `results`: resultados. Opcionalmente con carreras por entrada (`awayInnings`, `homeInnings`), hits y errores; los que guarda la pizarra traen `source: "pizarra"`.
+- `liveGame/actual`: marcador en vivo que publica la pizarra del estadio (`status`: `en_vivo`, `inactivo` o `final`; entrada, conteo y bases).
 - `chatMessages`: mensajes de comunidad.
 - `bannedWords`: palabras prohibidas para validacion basica.
 - `mutedUsers`: usuarios temporales silenciados.
 - `admins`: lista de UIDs autorizados.
 
+## Pizarra del estadio
+
+La carpeta `pizarra/` es la pizarra de la pantalla grande del estadio:
+
+- `pizarra/index.html`: la pantalla de 8000×1500 (para OBS o la pantalla del estadio). No pide inicio de sesión.
+- `pizarra/control.html`: el panel de control. Solo entra un usuario administrador.
+
+El control y la pantalla se sincronizan dentro de la misma computadora (por `localStorage`), aunque falle internet. Con el interruptor "Mostrar en la app", el control publica el juego en `liveGame/actual` y la pestaña En vivo lo muestra en tiempo real. "Finalizar juego y guardar resultado" lo guarda en `results` con la línea completa.
+
+Cada cambio publicado cuenta una lectura por cada persona con la app abierta. El control agrupa los cambios en una escritura cada 3 segundos como máximo, y la app solo escucha mientras está visible.
+
 ## Desarrollo local
 
-Abre `index.html` directamente en el navegador para revisar la version demo. Para probar Firebase, usa un servidor estatico local porque los modulos ES y las importaciones CDN funcionan mejor sobre HTTP.
+En `localhost` la app usa los **emuladores de Firebase**: datos locales que nunca tocan producción. Arriba de la pantalla aparece el aviso "Datos locales (emulador)".
+
+Requisitos: Node 20 o más, Java 21 o más y la Firebase CLI (`npm install -g firebase-tools`).
+
+1. Enciende los emuladores (Firestore en el puerto 8180, Auth en 9099 y su panel en http://127.0.0.1:4000). Los datos se guardan en `.emulador/` al cerrar:
+
+```bash
+firebase emulators:start --project demo-mineros --import .emulador --export-on-exit
+```
+
+La primera vez quita `--import .emulador` porque la carpeta todavía no existe.
+
+2. Carga los datos de prueba (borra lo que haya en los emuladores). Crea el admin local `admin@mineros.test`; la contraseña está en el script:
+
+```bash
+node scripts/datos-locales.mjs
+```
+
+3. Levanta la app y abre http://localhost:8080:
 
 ```bash
 python -m http.server 8080
 ```
 
-Luego visita:
+Para mirar los datos reales desde localhost abre `http://localhost:8080/?datos=produccion`; para volver a los locales, `?datos=local`. Con datos reales, todo lo que escribas (chat, panel, pizarra) se guarda en producción.
 
-```text
-http://localhost:8080
+### Pruebas
+
+Con los emuladores encendidos:
+
+```bash
+node --test "tests/*.test.mjs"
 ```
+
+- `tests/funciones.test.mjs`: funciones de la app (URLs de YouTube, imágenes, fechas, marcador).
+- `tests/reglas.test.mjs`: reglas de Firestore. Al terminar vuelve a cargar los datos de prueba.
+- `tests/contraste.test.mjs`: contraste de los colores del sistema de diseño en modo claro y oscuro.
+
+Auditoría de accesibilidad en el navegador (abre la consola en cualquier página local):
+
+```js
+const { auditar } = await import("/scripts/auditoria-accesibilidad.js"); auditar();
+```
+
+### Especificaciones
+
+Las features nuevas se escriben primero como spec en `specs/` (Spec-Driven Development). Ver `specs/README.md`.
 
 ## Despliegue en GitHub Pages
 

@@ -1,25 +1,70 @@
 <!doctype html>
-<html lang="es">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Jugadores | Mineros TV</title><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="../assets/css/main.css"><link rel="stylesheet" href="../assets/css/admin.css"></head>
-<body>
-  <div class="admin-layout">
-    <aside class="admin-sidebar" data-admin-nav></aside>
-    <main class="admin-main">
-      <div class="admin-top"><h1>Jugadores</h1><button class="admin-button" data-logout>Salir</button></div>
-      <form class="admin-card admin-form" id="playerForm">
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Jugadores | Panel Mineros TV</title>
+  <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#19191B" media="(prefers-color-scheme: dark)">
+  <script>try{var p=JSON.parse(localStorage.getItem("mineros_prefs")||"{}");if(p.theme==="light"||p.theme==="dark")document.documentElement.dataset.theme=p.theme;if(p.text==="grande"||p.text==="enorme")document.documentElement.dataset.text=p.text;}catch(e){}</script>
+  <link rel="icon" href="../favicon.ico" sizes="any">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;700&family=Big+Shoulders+Display:wght@600;800;900&family=Big+Shoulders+Stencil+Display:wght@800&display=swap">
+  <link rel="stylesheet" href="../assets/css/main.css?v=20261103d">
+  <link rel="stylesheet" href="../assets/css/admin.css?v=20261103d">
+</head>
+<body class="cargando">
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <div class="panel">
+    <header class="panel-cabeza">
+      <a class="marca" href="dashboard.html"><img src="../assets/icons/escudo.png" alt="" width="48" height="34">Panel<span>MTV</span></a>
+      <span class="panel-usuario" data-admin-email></span>
+      <button class="boton-ajustes" type="button" data-abrir-ajustes aria-label="Ajustes de letra y color">Aa</button>
+      <button class="boton boton-borde boton-chico" type="button" data-logout>Salir</button>
+    </header>
+    <nav class="panel-nav" data-admin-nav aria-label="Secciones del panel"></nav>
+    <main class="panel-main" id="contenido">
+      <div class="panel-titulo">
+        <h1>Jugadores</h1>
+        <p>Roster de cada equipo, con número, posición y foto.</p>
+      </div>
+      <form class="formulario tarjeta" id="playerForm">
         <input type="hidden" id="docId">
-        <label class="admin-field">Nombre<input id="name" required></label>
-        <label class="admin-field">Posicion<input id="position" required></label>
-        <label class="admin-field">Numero<input id="number" type="number" min="0" required></label>
-        <label class="admin-field">Biografia<textarea id="bio" rows="4"></textarea></label>
-        <label class="admin-field">Foto<input id="photoFile" type="file" accept="image/*"></label>
-        <img id="photoPreview" class="admin-img-preview" style="display:none">
-        <label class="admin-field">O URL externa<input id="photoUrl" placeholder="https://..."></label>
-        <button class="admin-button" type="submit">Guardar jugador</button>
+        <fieldset class="grupo" data-campo-deporte>
+          <legend>Deporte</legend>
+          <div class="opciones opciones-2"><label><input type="radio" name="sport" value="beisbol" checked><span>Béisbol</span></label><label><input type="radio" name="sport" value="basquetbol"><span>Básquetbol</span></label></div>
+        </fieldset>
+        <div class="campos">
+          <label class="campo" for="name">Nombre<input id="name" maxlength="80" required></label>
+          <label class="campo" for="number">Número<input id="number" type="number" inputmode="numeric" min="0" max="99" required></label>
+        </div>
+        <label class="campo" for="position">Posición<input id="position" maxlength="40" required><small>Por ejemplo: Pitcher, Base, Pívot.</small></label>
+        <label class="campo" for="bio">Descripción corta<textarea id="bio" rows="3" maxlength="800"></textarea></label>
+        <div class="campos">
+          <div class="campo">Foto
+            <img id="photoPreview" class="vista-imagen" alt="Vista previa" hidden>
+            <small>Sube una imagen o pega una URL que empiece con https.</small>
+          </div>
+          <div class="campos" style="grid-template-columns:1fr">
+            <label class="campo" for="photoFile">Subir imagen<input id="photoFile" type="file" accept="image/*"></label>
+            <label class="campo" for="photoUrl">O pegar URL<input id="photoUrl" type="url" inputmode="url" placeholder="https://"></label>
+            <button class="boton boton-borde boton-chico" type="button" id="photoClear">Quitar imagen</button>
+          </div>
+        </div>
+        <div class="acciones-form">
+          <button class="boton boton-rojo" type="submit" id="submitBtn">Agregar jugador</button>
+          <p class="aviso" id="formNote" role="status" aria-live="polite"></p>
+        </div>
       </form>
-      <section class="admin-list" id="itemsList"></section>
+      <section class="seccion" aria-labelledby="t-lista">
+        <div class="lista-cabeza"><h2 id="t-lista">Jugadores</h2><div id="listFilter" hidden></div></div>
+        <div class="lista" id="itemsList"></div>
+      </section>
     </main>
   </div>
-  <script type="module" src="../assets/js/admin/players-admin.js"></script>
+  <script type="module" src="../assets/js/shell.js?v=20261103d"></script>
+  <script type="module" src="../assets/js/admin/players-admin.js?v=20261103d"></script>
 </body>
 </html>
